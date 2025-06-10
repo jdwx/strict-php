@@ -65,8 +65,13 @@ final class OK {
     }
 
 
+    public static function ini_get( string $option ) : string {
+        return TypeIs::string( ini_get( $option ), 'ini_get return value' );
+    }
+
+
     public static function ini_set( string $option, string|int|float|bool|null $value ) : string {
-        return TypeIs::string( ini_set( $option, $value ) );
+        return TypeIs::string( ini_set( $option, $value ), 'ini_set return value' );
     }
 
 

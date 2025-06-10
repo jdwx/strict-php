@@ -31,7 +31,7 @@ final class OKTest extends TestCase {
         self::assertIsString( OK::fgets( $fh ) );
         fclose( $fh );
 
-        $tempFile = tempnam( sys_get_temp_dir(), 'test' );
+        $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         $fh = OK::fopen( $tempFile, 'w' );
         unlink( $tempFile );
         self::expectException( TypeException::class );
@@ -54,7 +54,7 @@ final class OKTest extends TestCase {
         self::assertIsString( OK::fread( $fh, 10 ) );
         fclose( $fh );
 
-        $tempFile = tempnam( sys_get_temp_dir(), 'test' );
+        $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         $fh = OK::fopen( $tempFile, 'w' );
         unlink( $tempFile );
         self::expectException( TypeException::class );
@@ -63,14 +63,14 @@ final class OKTest extends TestCase {
 
 
     public function testFWrite() : void {
-        $tempFile = tempnam( sys_get_temp_dir(), 'test' );
+        $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         $fh = OK::fopen( $tempFile, 'w' );
         self::assertIsResource( $fh );
         unlink( $tempFile );
         self::assertSame( 9, OK::fwrite( $fh, 'test data' ) );
         fclose( $fh );
 
-        $tempFile = tempnam( sys_get_temp_dir(), 'test' );
+        $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         $fh = OK::fopen( $tempFile, 'r' );
         self::assertIsResource( $fh );
         unlink( $tempFile );
@@ -88,11 +88,30 @@ final class OKTest extends TestCase {
 
 
     public function testFilePutContents() : void {
-        $tempFile = tempnam( sys_get_temp_dir(), 'test' );
+        $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         self::assertSame( 9, OK::file_put_contents( $tempFile, 'test data' ) );
         unlink( $tempFile );
         self::expectException( TypeException::class );
         OK::file_put_contents( '/no/such/file', 'data' );
+    }
+
+
+    public function testIniGet() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsString( OK::ini_get( 'display_errors' ) );
+        self::expectException( TypeException::class );
+        OK::ini_get( 'no_such_value' );
+    }
+
+
+    public function testIniSet() : void {
+        $oldValue = OK::ini_set( 'display_errors', '1' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsString( $oldValue );
+        // Reset to the old value
+        OK::ini_set( 'display_errors', $oldValue );
+        self::expectException( TypeException::class );
+        OK::ini_set( 'no_such_value', 'foo' );
     }
 
 
@@ -115,6 +134,27 @@ final class OKTest extends TestCase {
         self::assertIsInt( OK::strtotime( 'now' ) );
         self::expectException( TypeException::class );
         OK::strtotime( 'invalid date string' );
+    }
+
+
+    /**
+     * Tests tempnam() but, by necessity, also tests ini_set().
+     */
+    public function testTempNam() : void {
+        $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsString( $tempFile );
+        # This is another that I do not know how to provoke an exception for.
+        # If the target directory does not exist, tempnam() falls back to
+        # the system's temporary directory.
+        self::expectException( TypeException::class );
+        $oldTemp = OK::ini_set( 'sys_temp_dir', '/no/such/path' );
+        try {
+            OK::tempnam( __DIR__, 'test' );
+        } catch ( TypeException $e ) {
+            OK::ini_set( 'sys_temp_dir', $oldTemp );
+            throw $e;
+        }
     }
 
 
