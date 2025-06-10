@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Strict\Tests;
 
 
-use JDWX\Strict\TypeException;
+use JDWX\Strict\Exceptions\TypeException;
 use JDWX\Strict\TypeIs;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +18,7 @@ final class TypeIsTest extends TestCase {
 
 
     public function testArray() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsArray( TypeIs::array( [] ) );
         self::expectException( TypeException::class );
         TypeIs::array( 'not an array' );
@@ -25,6 +26,7 @@ final class TypeIsTest extends TestCase {
 
 
     public function testBool() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsBool( TypeIs::bool( true ) );
         self::expectException( TypeException::class );
         TypeIs::bool( 'not a bool' );
@@ -32,22 +34,25 @@ final class TypeIsTest extends TestCase {
 
 
     public function testCallable() : void {
-        self::assertIsCallable( TypeIs::callable( function () {
-        } ) );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsCallable( TypeIs::callable( function () {} ) );
         self::expectException( TypeException::class );
         TypeIs::callable( 'not callable' );
     }
 
 
     public function testFloat() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsFloat( TypeIs::float( 1.23 ) );
-        self::assertIsFloat( TypeIs::float( 123 ) ); // int to float conversion
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsFloat( TypeIs::float( 123 ) ); # implicit int-to-float conversion even for strict types
         self::expectException( TypeException::class );
         TypeIs::float( 'not a float' );
     }
 
 
     public function testInt() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsInt( TypeIs::int( 123 ) );
         self::expectException( TypeException::class );
         TypeIs::int( 'not an int' );
@@ -61,7 +66,15 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testResource() : void {
+        self::assertIsResource( TypeIs::resource( fopen( __FILE__, 'r' ) ) );
+        self::expectException( TypeException::class );
+        TypeIs::resource( 'not a resource' );
+    }
+
+
     public function testString() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( TypeIs::string( 'test' ) );
         self::expectException( TypeException::class );
         TypeIs::string( 123 ); // int is not a string
@@ -82,6 +95,14 @@ final class TypeIsTest extends TestCase {
         self::assertSame( 'foo', TypeIs::stringy( 'foo' ) );
         self::expectException( TypeException::class );
         TypeIs::stringy( 123 ); // int is not a string
+    }
+
+
+    public function testTrue() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertTrue( TypeIs::true( true ) );
+        self::expectException( TypeException::class );
+        TypeIs::true( 'not a bool' );
     }
 
 

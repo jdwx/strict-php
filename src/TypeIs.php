@@ -7,12 +7,14 @@ declare( strict_types = 1 );
 namespace JDWX\Strict;
 
 
+use JDWX\Strict\Exceptions\TypeException;
 use Stringable;
 
 
 final class TypeIs {
 
 
+    /** @return mixed[] */
     public static function array( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
             return $i_value;
