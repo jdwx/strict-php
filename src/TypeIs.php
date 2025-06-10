@@ -79,11 +79,27 @@ final class TypeIs {
     }
 
 
+    public static function stringOrNull( mixed $i_value, ?string $i_nstContext = null ) : ?string {
+        if ( is_string( $i_value ) || is_null( $i_value ) ) {
+            return $i_value;
+        }
+        throw new TypeException( 'string or null', $i_value, $i_nstContext );
+    }
+
+
     public static function stringy( mixed $i_value, ?string $i_nstContext = null ) : string|Stringable {
         if ( is_string( $i_value ) || $i_value instanceof Stringable ) {
             return $i_value;
         }
         throw new TypeException( 'string or Stringable', $i_value, $i_nstContext );
+    }
+
+
+    public static function stringyOrNull( mixed $i_value, ?string $i_nstContext = null ) : string|Stringable|null {
+        if ( is_string( $i_value ) || $i_value instanceof Stringable || is_null( $i_value ) ) {
+            return $i_value;
+        }
+        throw new TypeException( 'string, Stringable or null', $i_value, $i_nstContext );
     }
 
 

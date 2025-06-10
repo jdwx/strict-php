@@ -58,12 +58,34 @@ final class Iter {
 
 
     /**
-     * @param iterable<string> $i_it
+     * @param iterable<string|null> $i_it
+     * @return iterable<string|null>
+     */
+    public static function listStringOrNull( iterable $i_it ) : iterable {
+        foreach ( $i_it as $v ) {
+            yield TypeIs::stringOrNull( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<string|Stringable> $i_it
      * @return iterable<string|Stringable>
      */
     public static function listStringy( iterable $i_it ) : iterable {
         foreach ( $i_it as $v ) {
             yield TypeIs::stringy( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<string|Stringable|null> $i_it
+     * @return iterable<string|Stringable|null>
+     */
+    public static function listStringyOrNull( iterable $i_it ) : iterable {
+        foreach ( $i_it as $v ) {
+            yield TypeIs::stringyOrNull( $v );
         }
     }
 
@@ -117,6 +139,18 @@ final class Iter {
 
 
     /**
+     * @param iterable<string, string|null> $i_it
+     * @return iterable<string, string|null>
+     * @noinspection PhpCastIsUnnecessaryInspection
+     */
+    public static function mapStringOrNull( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            yield strval( $k ) => TypeIs::stringOrNull( $v );
+        }
+    }
+
+
+    /**
      * @param iterable<string, string|Stringable> $i_it
      * @return iterable<string, string|Stringable>
      * @noinspection PhpCastIsUnnecessaryInspection
@@ -124,6 +158,18 @@ final class Iter {
     public static function mapStringy( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
             yield strval( $k ) => TypeIs::stringy( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<string, string|Stringable|null> $i_it
+     * @return iterable<string, string|Stringable|null>
+     * @noinspection PhpCastIsUnnecessaryInspection
+     */
+    public static function mapStringyOrNull( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            yield strval( $k ) => TypeIs::stringyOrNull( $v );
         }
     }
 

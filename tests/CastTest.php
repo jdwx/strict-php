@@ -1,0 +1,166 @@
+<?php
+
+
+declare( strict_types = 1 );
+
+
+namespace JDWX\Strict\Tests;
+
+
+use JDWX\Strict\Cast;
+use JDWX\Strict\Exceptions\TypeException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+
+
+#[CoversClass( Cast::class )]
+final class CastTest extends TestCase {
+
+
+    public function testList() : void {
+        self::assertSame( [ 1, 2.34, 'three' ], Cast::list( [ 1, 2.34, 'three' ] ) );
+        self::assertSame( [ 1, 2.34, 'three' ], Cast::list( [ 1, 'foo' => 2.34, 'three' ] ) );
+    }
+
+
+    public function testListFloat() : void {
+        self::assertSame( [ 1.23, 2.34, 3.45 ], Cast::listFloat( [ 1.23, 2.34, 3.45 ] ) );
+        self::assertSame( [ 1.23, 2.34, 3.45 ], Cast::listFloat( [ 1.23, 'foo' => 2.34, 3.45 ] ) );
+        self::expectException( TypeException::class );
+        Cast::listFloat( [ 'not a float' ] );
+    }
+
+
+    public function testListInt() : void {
+        self::assertSame( [ 1, 2, 3 ], Cast::listInt( [ 1, 2, 3 ] ) );
+        self::assertSame( [ 1, 2, 3 ], Cast::listInt( [ 1, 'foo' => 2, 3 ] ) );
+        self::expectException( TypeException::class );
+        Cast::listInt( [ 'not an int' ] );
+    }
+
+
+    public function testListString() : void {
+        self::assertSame( [ 'a', 'b', 'c' ], Cast::listString( [ 'a', 'b', 'c' ] ) );
+        self::assertSame( [ 'a', 'b', 'c' ], Cast::listString( [ 'a', 'foo' => 'b', 'c' ] ) );
+        self::expectException( TypeException::class );
+        Cast::listString( [ 1 ] );
+    }
+
+
+    public function testListStringOrNull() : void {
+        self::assertSame( [ 'a', 'b', null ], Cast::listStringOrNull( [ 'a', 'b', null ] ) );
+        self::assertSame( [ 'a', 'b', null ], Cast::listStringOrNull( [ 'a', 'foo' => 'b', null ] ) );
+        self::expectException( TypeException::class );
+        Cast::listStringOrNull( [ new \stdClass() ] );
+    }
+
+
+    public function testListStringy() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'a';
+            }
+
+
+        };
+        self::assertSame( [ 'a', 'b', $str ], Cast::listStringy( [ 'a', 'b', $str ] ) );
+        self::assertSame( [ 'a', 'b', $str ], Cast::listStringy( [ 'a', 'foo' => 'b', $str ] ) );
+        self::expectException( TypeException::class );
+        Cast::listStringy( [ 1 ] );
+    }
+
+
+    public function testListStringyOrNull() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'a';
+            }
+
+
+        };
+        self::assertSame( [ 'a', $str, null ], Cast::listStringyOrNull( [ 'a', $str, null ] ) );
+        self::assertSame( [ 'a', $str, null ], Cast::listStringyOrNull( [ 'a', 'foo' => $str, null ] ) );
+        self::expectException( TypeException::class );
+        Cast::listStringyOrNull( [ 1.23 ] );
+    }
+
+
+    public function testMap() : void {
+        $r = [ 'foo' => 'Foo!', 'bar' => 123, 'baz' => null ];
+        self::assertSame( $r, Cast::map( $r ) );
+    }
+
+
+    public function testMapFloat() : void {
+        $r = [ 'foo' => 1.23, 'bar' => 2.34 ];
+        self::assertSame( $r, Cast::mapFloat( $r ) );
+        self::expectException( TypeException::class );
+        Cast::mapFloat( [ 'foo' => 'not a float' ] );
+    }
+
+
+    public function testMapInt() : void {
+        $r = [ 'foo' => 1, 'bar' => 2 ];
+        self::assertSame( $r, Cast::mapInt( $r ) );
+        self::expectException( TypeException::class );
+        Cast::mapInt( [ 'foo' => 'not an int' ] );
+    }
+
+
+    public function testMapString() : void {
+        $r = [ 'foo' => 'foo', 'bar' => 'bar' ];
+        self::assertSame( $r, Cast::mapString( $r ) );
+        self::expectException( TypeException::class );
+        Cast::mapString( [ 'foo' => 1 ] );
+    }
+
+
+    public function testMapStringOrNull() : void {
+        $r = [ 'foo' => 'foo', 'bar' => null ];
+        self::assertSame( $r, Cast::mapStringOrNull( $r ) );
+        self::expectException( TypeException::class );
+        Cast::mapString( [ 'foo' => 1 ] );
+    }
+
+
+    public function testMapStringy() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'Bar!';
+            }
+
+
+        };
+        $r = [ 'foo' => 'Foo!', 'bar' => $str ];
+        self::assertSame( $r, Cast::mapStringy( $r ) );
+        self::expectException( TypeException::class );
+        Cast::mapStringy( [ 'foo' => 1 ] );
+    }
+
+
+    public function testMapStringyOrNull() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'Bar!';
+            }
+
+
+        };
+        $r = [ 'foo' => 'Foo!', 'bar' => $str, 'baz' => null ];
+        self::assertSame( $r, Cast::mapStringyOrNull( $r ) );
+        self::expectException( TypeException::class );
+        Cast::mapStringyOrNull( [ 'foo' => 1 ] );
+
+
+    }
+
+
+}

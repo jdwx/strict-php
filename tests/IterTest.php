@@ -54,6 +54,16 @@ final class IterTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
+    public function testListStringOrNull() : void {
+        self::assertSame( [ 'a', 'b', null ], iterator_to_array( Iter::listStringOrNull( [ 'a', 'b', null ] ) ) );
+        self::assertSame( [ 'a', 'b', null ], iterator_to_array( Iter::listStringOrNull( [ 'a', 'foo' => 'b', null ] ) ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        iterator_to_array( Iter::listStringOrNull( [ new \stdClass() ] ) );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
     public function testListStringy() : void {
         $str = new class implements \Stringable {
 
@@ -69,6 +79,25 @@ final class IterTest extends TestCase {
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         iterator_to_array( Iter::listStringy( [ 1 ] ) );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testListStringyOrNull() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'a';
+            }
+
+
+        };
+        self::assertSame( [ 'a', $str, null ], iterator_to_array( Iter::listStringyOrNull( [ 'a', $str, null ] ) ) );
+        self::assertSame( [ 'a', $str, null ], iterator_to_array( Iter::listStringyOrNull( [ 'a', 'foo' => $str, null ] ) ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        iterator_to_array( Iter::listStringyOrNull( [ 1.23 ] ) );
     }
 
 
@@ -127,6 +156,16 @@ final class IterTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
+    public function testMapStringOrNull() : void {
+        $r = [ 'foo' => 'foo', 'bar' => null ];
+        self::assertSame( $r, iterator_to_array( Iter::mapStringOrNull( $r ) ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        iterator_to_array( Iter::mapString( [ 'foo' => 1 ] ) );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
     public function testMapStringy() : void {
         $str = new class implements \Stringable {
 
@@ -142,6 +181,27 @@ final class IterTest extends TestCase {
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         iterator_to_array( Iter::mapStringy( [ 'foo' => 1 ] ) );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testMapStringyOrNull() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'Bar!';
+            }
+
+
+        };
+        $r = [ 'foo' => 'Foo!', 'bar' => $str, 'baz' => null ];
+        self::assertSame( $r, iterator_to_array( Iter::mapStringyOrNull( $r ) ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        iterator_to_array( Iter::mapStringyOrNull( [ 'foo' => 1 ] ) );
+
+
     }
 
 

@@ -77,7 +77,15 @@ final class TypeIsTest extends TestCase {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( TypeIs::string( 'test' ) );
         self::expectException( TypeException::class );
-        TypeIs::string( 123 ); // int is not a string
+        TypeIs::string( 123 );
+    }
+
+
+    public function testStringOrNull() : void {
+        self::assertSame( 'foo', TypeIs::stringOrNull( 'foo' ) );
+        self::assertNull( TypeIs::stringOrNull( null ) );
+        self::expectException( TypeException::class );
+        TypeIs::stringOrNull( 123 );
     }
 
 
@@ -94,7 +102,25 @@ final class TypeIsTest extends TestCase {
         self::assertSame( $stringable, TypeIs::stringy( $stringable ) );
         self::assertSame( 'foo', TypeIs::stringy( 'foo' ) );
         self::expectException( TypeException::class );
-        TypeIs::stringy( 123 ); // int is not a string
+        TypeIs::stringy( 123 );
+    }
+
+
+    public function testStringyOrNull() : void {
+        $stringable = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'stringable';
+            }
+
+
+        };
+        self::assertSame( 'foo', TypeIs::stringyOrNull( 'foo' ) );
+        self::assertSame( $stringable, TypeIs::stringyOrNull( $stringable ) );
+        self::assertNull( TypeIs::stringyOrNull( null ) );
+        self::expectException( TypeException::class );
+        TypeIs::stringyOrNull( false );
     }
 
 
