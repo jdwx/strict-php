@@ -1,8 +1,30 @@
-This module is designed to make it easier to write PHP that works with strict type checks in static analysis. It allows you to make type exceptions explicit without writing a ton of extra code. It also helps balance always check that functions didn't fail with the YAGNI of preemptively handling errors that may never occur. 
+# jdwx/strict-php
+
+A simple PHP module for writing strict, type-safe code with minimal boilerplate.
+
+## Installation
+
+You can require it directly with Composer:
+
+```bash
+composer require jdwx/strict
+```
+
+Or download the source from GitHub: https://github.com/jdwx/strict-php.git
+
+## Requirements
+
+This module requires PHP 8.3 or later. It has no other runtime dependencies.
+
+It is designed to work with strict types and static analysis tools like Phan and PHPStan.
+
+## Usage
+
+This module is designed to make it easier to write PHP that works with strict_mode and strict type checks in static analysis. It allows you to make type expectations explicit without writing a ton of extra code. It's meant to balance always check that functions didn't fail with the YAGNI of preemptively handling errors that may never occur.
 
 This is particularly helpful for quick and dirty code or prototyping.
 
-## Return Value Checking
+### Return Value Checking
 
 The OK class provides static methods for PHP functions that may fail. The static method calls the underlying PHP function and throws an exception if it fails.
 
@@ -46,7 +68,7 @@ can be reduced to:
 $contents = OK::file_get_contents( '/some/file' );
 ```
 
-## Type Checking
+### Type Checking
 
 The TypeIs class provides static methods for ensuring that a value is a given type. This is mostly for the benefit of static analysis, but can help detect unexpected types earlier than function call boundaries (assuming strict_types is enabled).
 
@@ -84,9 +106,11 @@ The TypeIs class can help:
 i_require_a_string( TypeIs::string( $this->string_or_null ) );
 ```
 
-This resolves the static analysis warning from Phan. And it's safe, because if your expectation that `$this->string_or_null` is already a string doesn't hold, an exception will be thrown.
+This resolves the static analysis warning from Phan. And it's safe, because if your expectation that
+`$this->string_or_null` is already a string doesn't hold, an exception will be thrown.
 
-Note that this is *very* different from `strval( $this->string_or_null )` because it is asserting that the value is already a string, not silently converting nulls to an empty string.
+Note that this is *very* different from
+`strval( $this->string_or_null )` because it is asserting that the value is already a string, not silently converting nulls to an empty string.
 
 This is low overhead but not zero overhead. So it isn't ideal if you wind up using that property 30 times. In that case, it's still better to create the local variable:
 
@@ -97,11 +121,12 @@ i_also_require_a_string( $string );
 i_too_require_a_string( $string );
 ```
 
-## Iterators
+### Iterators
 
 In PHP, arrays serve as both maps and lists. (We distinguish "maps" as arrays with meaningful string keys and "lists" as arrays with ordinal integer keys.)
 
-One of PHP's lingering "features" from its early years is that numbers stored as strings are converted to numbers when used as array keys. E.g. `$x[ "1" ] = 'one'` and `$x[ 1 ] = 'one'` are equivalent. This causes problems when strict_types is used:
+One of PHP's lingering "features" from its early years is that numbers stored as strings are converted to numbers when used as array keys. E.g.
+`$x[ "1" ] = 'one'` and `$x[ 1 ] = 'one'` are equivalent. This causes problems when strict_types is used:
 
 ```php
 
@@ -117,7 +142,8 @@ function do_a_thing( array $r ) : void {
 do_a_thing( [ 'a' => 'Ayyyyy!', '1' => 'one' ] );
 ```
 
-This code will typically *pass* static analysis and then fail with a TypeError when run. That's not great! The Iter class is designed to handle these situations:
+This code will typically
+*pass* static analysis and then fail with a TypeError when run. That's not great! The Iter class is designed to handle these situations:
 
 ```php
 declare( strict_types = 1 );
@@ -132,11 +158,13 @@ function do_a_thing( array $r ) : void {
 do_a_thing( [ 'a' => 'Ayyyyy!', '1' => 'one' ] );
 ```
 
-This avoids the need to remember to have every reference to `$k` use `strval( $k )` or to do `$k = strval( $k )` at the top of the loop. As a bonus, it also ensures that the value is really a string. (If that's undesirable, the Iter::map() and Iter::list() static methods don't perform any type checking of the values returned.)
+This avoids the need to remember to have every reference to `$k` use `strval( $k )` or to do
+`$k = strval( $k )` at the top of the loop. As a bonus, it also ensures that the value is really a string. (If that's undesirable, the Iter::map() and Iter::list() static methods don't perform any type checking of the values returned.)
 
-## Conversion
+### Conversion
 
-The Convert class provides some simple helper static functions for common cases of parameter handling. For example, it's often desirable to accept a single string in lieu of a list so people don't have to write `do_things( [ 'one_thing' ] )`:
+The Convert class provides some simple helper static functions for common cases of parameter handling. For example, it's often desirable to accept a single string in lieu of a list so people don't have to write
+`do_things( [ 'one_thing' ] )`:
 
 ```php
 
@@ -162,3 +190,13 @@ function do_things( array|string $targets ) : void {
     }
 }
 ```
+
+## Stability
+
+This is a new module that is not yet widely used internally. The OK class attempts to mimic the PHP internal functions it covers as closely as possible, so it should be at least as stable as those functions. The TypeIs, Iter, and Convert classes are designed to be low-overhead and are providing relatively straightforward functionality that should allow them to be pretty stable, but they are new and may have some rough edges. And as this module is adopted internally, we may determine that it is necessary to change the API.
+
+It has complete test coverage, with a handful of exceptions for some of the PHP function error cases that are difficult to test.
+
+## History
+
+This is a new module, originally written in June 2025.
