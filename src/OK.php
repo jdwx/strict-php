@@ -38,6 +38,7 @@ final class OK {
     }
 
 
+    /** @suppress PhanPossiblyNullTypeArgumentInternal */
     public static function file_put_contents( string $filename, mixed $data, int $flags = 0,
                                               mixed  $context = null ) : int {
         return TypeIs::int( @file_put_contents( $filename, $data, $flags, $context ),
@@ -45,6 +46,7 @@ final class OK {
     }
 
 
+    /** @suppress PhanPossiblyNullTypeArgumentInternal */
     public static function fopen( string $filename, string $mode, bool $use_include_path = false,
                                   mixed  $context = null ) : mixed {
         return TypeIs::resource( @fopen( $filename, $mode, $use_include_path, $context ),
@@ -60,6 +62,11 @@ final class OK {
     /** @suppress PhanTypeMismatchArgumentNullableInternal */
     public static function fwrite( mixed $handle, string $string, ?int $length = null ) : int {
         return TypeIs::int( @fwrite( $handle, $string, $length ) );
+    }
+
+
+    public static function ini_set( string $option, string|int|float|bool|null $value ) : string {
+        return TypeIs::string( ini_set( $option, $value ) );
     }
 
 
@@ -95,6 +102,11 @@ final class OK {
     /** @suppress PhanTypeMismatchArgumentNullableInternal */
     public static function strtotime( string $datetime, ?int $baseTimestamp = null ) : int {
         return TypeIs::int( strtotime( $datetime, $baseTimestamp ), 'strtotime return value' );
+    }
+
+
+    public static function tempnam( string $directory, string $prefix ) : string {
+        return TypeIs::string( tempnam( $directory, $prefix ) );
     }
 
 
