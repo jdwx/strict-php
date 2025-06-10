@@ -81,6 +81,15 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testStringOrListString() : void {
+        self::assertSame( 'foo', TypeIs::stringOrListString( 'foo' ) );
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrListString( [ 'foo', 'bar' ] ) );
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrListString( [ 'foo', 'baz' => 'bar' ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::stringOrListString( 123 );
+    }
+
+
     public function testStringOrNull() : void {
         self::assertSame( 'foo', TypeIs::stringOrNull( 'foo' ) );
         self::assertNull( TypeIs::stringOrNull( null ) );

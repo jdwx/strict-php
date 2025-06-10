@@ -50,6 +50,15 @@ final class Cast {
 
 
     /**
+     * @param iterable<int|string, list<string>|string> $i_value
+     * @return list<list<string>|string>
+     */
+    public static function listStringOrListString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::listStringOrStringList( $i_value ) );
+    }
+
+
+    /**
      * @param iterable<int|string, mixed> $i_value
      * @return list<?string>
      */
@@ -109,6 +118,15 @@ final class Cast {
      */
     public static function mapString( iterable $i_value ) : array {
         return iterator_to_array( Iter::mapString( $i_value ) );
+    }
+
+
+    /**
+     * @param iterable<int|string, mixed> $i_value
+     * @return array<string, string|list<string>>
+     */
+    public static function mapStringOrListString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::mapStringOrListString( $i_value ) );
     }
 
 

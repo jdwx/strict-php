@@ -69,6 +69,17 @@ final class Iter {
 
 
     /**
+     * @param iterable<list<string>|string> $i_it
+     * @return iterable<list<string>|string>
+     */
+    public static function listStringOrStringList( iterable $i_it ) : iterable {
+        foreach ( $i_it as $v ) {
+            yield TypeIs::stringOrListString( $v );
+        }
+    }
+
+
+    /**
      * @param iterable<string|Stringable> $i_it
      * @return iterable<string|Stringable>
      */
@@ -134,6 +145,18 @@ final class Iter {
     public static function mapString( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
             yield strval( $k ) => TypeIs::string( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<string, list<string>|string> $i_it
+     * @return iterable<string, list<string>|string>
+     * @noinspection PhpCastIsUnnecessaryInspection
+     */
+    public static function mapStringOrListString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            yield strval( $k ) => TypeIs::stringOrListString( $v );
         }
     }
 

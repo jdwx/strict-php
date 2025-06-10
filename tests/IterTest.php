@@ -63,6 +63,19 @@ final class IterTest extends TestCase {
     }
 
 
+    public function testListStringOrStringList() : void {
+        self::assertSame( [ 'a', [ 'b', 'c' ] ], iterator_to_array(
+            Iter::listStringOrStringList( [ 'a', [ 'b', 'c' ] ] )
+        ) );
+        self::assertSame( [ 'a', [ 'b', 'c' ] ], iterator_to_array(
+            Iter::listStringOrStringList( [ 'a', 'foo' => [ 'b', 'bar' => 'c' ] ] )
+        ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        iterator_to_array( Iter::listStringOrStringList( [ 1 ] ) );
+    }
+
+
     /** @suppress PhanTypeMismatchArgument */
     public function testListStringy() : void {
         $str = new class implements \Stringable {
@@ -152,6 +165,15 @@ final class IterTest extends TestCase {
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         iterator_to_array( Iter::mapString( [ 'foo' => 1 ] ) );
+    }
+
+
+    public function testMapStringOrListString() : void {
+        $r = [ 'foo' => 'a', 'bar' => [ 'b', 'c' ] ];
+        self::assertSame( $r, iterator_to_array( Iter::mapStringOrListString( $r ) ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        iterator_to_array( Iter::mapStringOrListString( [ 'foo' => 1 ] ) );
     }
 
 

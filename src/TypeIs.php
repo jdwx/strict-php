@@ -79,6 +79,23 @@ final class TypeIs {
     }
 
 
+    /**
+     * @return list<string>|string
+     *
+     * We're not going to try to cover every possible case here, but "string or list<string>"
+     * covers a lot of common scenarios like HTTP and MIME headers.
+     */
+    public static function stringOrListString( mixed $i_value, ?string $i_nstContext = null ) : array|string {
+        if ( is_string( $i_value ) ) {
+            return $i_value;
+        }
+        if ( is_array( $i_value ) ) {
+            return Cast::listString( $i_value );
+        }
+        throw new TypeException( 'string or list<string>', $i_value, $i_nstContext );
+    }
+
+
     public static function stringOrNull( mixed $i_value, ?string $i_nstContext = null ) : ?string {
         if ( is_string( $i_value ) || is_null( $i_value ) ) {
             return $i_value;

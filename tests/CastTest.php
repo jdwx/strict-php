@@ -47,6 +47,16 @@ final class CastTest extends TestCase {
     }
 
 
+    public function testListStringOrListString() : void {
+        self::assertSame( [ 'a', [ 'b', 'c' ] ], Cast::listStringOrListString( [ 'a', [ 'b', 'c' ] ] ) );
+        self::assertSame( [ 'a', [ 'b', 'c' ] ], Cast::listStringOrListString(
+            [ 'a', 'foo' => [ 'b', 'bar' => 'c' ] ]
+        ) );
+        self::expectException( TypeException::class );
+        Cast::listStringOrListString( [ 1 ] );
+    }
+
+
     public function testListStringOrNull() : void {
         self::assertSame( [ 'a', 'b', null ], Cast::listStringOrNull( [ 'a', 'b', null ] ) );
         self::assertSame( [ 'a', 'b', null ], Cast::listStringOrNull( [ 'a', 'foo' => 'b', null ] ) );
@@ -116,6 +126,14 @@ final class CastTest extends TestCase {
         self::assertSame( $r, Cast::mapString( $r ) );
         self::expectException( TypeException::class );
         Cast::mapString( [ 'foo' => 1 ] );
+    }
+
+
+    public function testMapStringOrListString() : void {
+        $r = [ 'foo' => 'foo', 'bar' => [ 'bar1', 'bar2' ] ];
+        self::assertSame( $r, Cast::mapStringOrListString( $r ) );
+        self::expectException( TypeException::class );
+        Cast::mapStringOrListString( [ 'foo' => 1 ] );
     }
 
 
