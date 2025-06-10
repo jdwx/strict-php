@@ -96,6 +96,15 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testHttpResponseCode() : void {
+        # Since PHPUnit doesn't run under a web server, we cannot test
+        # the successful case of http_response_code(). But it's happy
+        # to fail for us!
+        self::expectException( TypeException::class );
+        OK::http_response_code();
+    }
+
+
     public function testIniGet() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( OK::ini_get( 'display_errors' ) );
@@ -119,6 +128,35 @@ final class OKTest extends TestCase {
         self::assertIsArray( OK::json_decode( '{"a":1,"b":2}', true ) );
         self::expectException( UnexpectedFailureException::class );
         OK::json_decode( 'invalid json' );
+    }
+
+
+    public function testOutputBuffering() : void {
+        # Most of these fall into the "can't test failure" category, especially
+        # since PHPUnit is already using output buffering.
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertTrue( OK::ob_start() );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertTrue( OK::ob_clean() );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertTrue( OK::ob_flush() );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertTrue( OK::ob_end_flush() );
+
+        OK::ob_start();
+        echo 'Foo';
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertTrue( OK::ob_end_clean() );
+
+        OK::ob_start();
+        echo 'Bar';
+        self::assertSame( 'Bar', OK::ob_get_contents() );
+        self::assertSame( 3, OK::ob_get_length() );
+        self::assertSame( 'Bar', OK::ob_get_clean() );
+
+        OK::ob_start();
+        echo 'Baz';
+        self::assertSame( 'Baz', OK::ob_get_flush() );
     }
 
 

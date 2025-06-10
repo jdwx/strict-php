@@ -65,6 +65,11 @@ final class OK {
     }
 
 
+    public static function http_response_code( int $code = 0 ) : int {
+        return TypeIs::int( http_response_code( $code ), 'http_response_code return value' );
+    }
+
+
     public static function ini_get( string $option ) : string {
         return TypeIs::string( ini_get( $option ), 'ini_get return value' );
     }
@@ -83,6 +88,51 @@ final class OK {
         }
         throw new UnexpectedFailureException( 'json_decode', json_last_error_msg(),
             0, null );
+    }
+
+
+    public static function ob_clean() : true {
+        return TypeIs::true( ob_clean(), 'ob_clean return value' );
+    }
+
+
+    public static function ob_end_clean() : true {
+        return TypeIs::true( ob_end_clean(), 'ob_end_clean return value' );
+    }
+
+
+    public static function ob_end_flush() : true {
+        return TypeIs::true( ob_end_flush(), 'ob_end_flush return value' );
+    }
+
+
+    public static function ob_flush() : true {
+        return TypeIs::true( ob_flush(), 'ob_flush return value' );
+    }
+
+
+    public static function ob_get_clean() : string {
+        return TypeIs::string( ob_get_clean(), 'ob_get_clean return value' );
+    }
+
+
+    public static function ob_get_contents() : string {
+        return TypeIs::string( ob_get_contents(), 'ob_get_contents return value' );
+    }
+
+
+    public static function ob_get_flush() : string {
+        return TypeIs::string( ob_get_flush(), 'ob_get_flush return value' );
+    }
+
+
+    public static function ob_get_length() : int {
+        return TypeIs::int( ob_get_length(), 'ob_get_length return value' );
+    }
+
+
+    public static function ob_start() : true {
+        return TypeIs::true( ob_start(), 'ob_start return value' );
     }
 
 
