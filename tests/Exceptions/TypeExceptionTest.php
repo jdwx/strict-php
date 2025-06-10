@@ -8,6 +8,7 @@ namespace JDWX\Strict\Tests\Exceptions;
 
 
 use JDWX\Strict\Exceptions\TypeException;
+use JDWX\Strict\OK;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -40,7 +41,7 @@ class TypeExceptionTest extends TestCase {
         $ex = new TypeException( 'foo', false, 'bar' );
         self::assertSame( 'For bar: expected foo got boolean (false)', $ex->getMessage() );
 
-        $fh = fopen( 'php://memory', 'r' );
+        $fh = OK::fopen( 'php://memory', 'r' );
         $ex = new TypeException( 'foo', $fh, 'bar' );
         self::assertSame( 'For bar: expected foo got resource (stream)', $ex->getMessage() );
         fclose( $fh );
