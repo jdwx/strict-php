@@ -142,14 +142,37 @@ final class OK {
      */
     public static function preg_match( string $pattern, string $subject, ?array &$matches = null,
                                        int    $flags = 0, int $offset = 0 ) : int {
-        /**
-         * @phpstan-ignore argument.type, paramOut.type
-         */
+        /** @phpstan-ignore argument.type, paramOut.type */
         $result = @preg_match( $pattern, $subject, $matches, $flags, $offset );
         if ( is_int( $result ) ) {
             return $result;
         }
         throw new UnexpectedFailureException( 'preg_match', preg_last_error_msg(),
+            0, null );
+    }
+
+
+    /**
+     * @param string|array<int, string> $pattern
+     * @param string|array<int, string> $replacement
+     * @param string|array<int|string, string> $subject
+     * @param int $limit
+     * @param int|null $count
+     * @param-out int $count
+     * @return string|array<int|string, string>
+     */
+    public static function preg_replace(
+        string|array $pattern,
+        string|array $replacement,
+        string|array $subject,
+        int          $limit = -1,
+        ?int         &$count = null
+    ) : string|array {
+        $result = @preg_replace( $pattern, $replacement, $subject, $limit, $count );
+        if ( is_string( $result ) || is_array( $result ) ) {
+            return $result;
+        }
+        throw new UnexpectedFailureException( 'preg_replace', preg_last_error_msg(),
             0, null );
     }
 
