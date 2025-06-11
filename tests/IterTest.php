@@ -63,6 +63,7 @@ final class IterTest extends TestCase {
     }
 
 
+    /** @suppress PhanTypeMismatchArgument */
     public function testListStringOrStringList() : void {
         self::assertSame( [ 'a', [ 'b', 'c' ] ], iterator_to_array(
             Iter::listStringOrStringList( [ 'a', [ 'b', 'c' ] ] )
@@ -168,6 +169,7 @@ final class IterTest extends TestCase {
     }
 
 
+    /** @suppress PhanTypeMismatchArgument */
     public function testMapStringOrListString() : void {
         $r = [ 'foo' => 'a', 'bar' => [ 'b', 'c' ] ];
         self::assertSame( $r, iterator_to_array( Iter::mapStringOrListString( $r ) ) );

@@ -47,12 +47,14 @@ final class CastTest extends TestCase {
     }
 
 
+    /** @suppress PhanTypeMismatchArgument */
     public function testListStringOrListString() : void {
         self::assertSame( [ 'a', [ 'b', 'c' ] ], Cast::listStringOrListString( [ 'a', [ 'b', 'c' ] ] ) );
         self::assertSame( [ 'a', [ 'b', 'c' ] ], Cast::listStringOrListString(
             [ 'a', 'foo' => [ 'b', 'bar' => 'c' ] ]
         ) );
         self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
         Cast::listStringOrListString( [ 1 ] );
     }
 
@@ -65,6 +67,7 @@ final class CastTest extends TestCase {
     }
 
 
+    /** @suppress PhanTypeMismatchArgument */
     public function testListStringy() : void {
         $str = new class implements \Stringable {
 
