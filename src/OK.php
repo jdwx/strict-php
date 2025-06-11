@@ -161,12 +161,9 @@ final class OK {
      * @param-out int $count
      * @return string|array<int|string, string>
      */
-    public static function preg_replace(
-        string|array $pattern,
-        string|array $replacement,
-        string|array $subject,
-        int          $limit = -1,
-        ?int         &$count = null
+    public static function preg_replace( string|array $pattern, string|array $replacement, string|array $subject,
+                                         int          $limit = -1,
+                                         ?int         &$count = null
     ) : string|array {
         $result = @preg_replace( $pattern, $replacement, $subject, $limit, $count );
         if ( is_string( $result ) || is_array( $result ) ) {
@@ -174,6 +171,21 @@ final class OK {
         }
         throw new UnexpectedFailureException( 'preg_replace', preg_last_error_msg(),
             0, null );
+    }
+
+
+    /**
+     * @param string $pattern
+     * @param string $replacement
+     * @param string $subject
+     * @param int $limit
+     * @param int|null $count
+     * @param-out int $count
+     * @return string
+     */
+    public static function preg_replace_string( string $pattern, string $replacement, string $subject,
+                                                int    $limit = -1, ?int &$count = null ) : string {
+        return TypeIs::string( self::preg_replace( $pattern, $replacement, $subject, $limit, $count ) );
     }
 
 

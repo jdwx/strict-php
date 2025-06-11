@@ -177,6 +177,16 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testPregReplaceString() : void {
+        self::assertSame(
+            'this is a test',
+            OK::preg_replace_string( '/test/', 'test', 'this is a test' )
+        );
+        self::expectException( UnexpectedFailureException::class );
+        OK::preg_replace_string( '/test#', 'test', 'this is a test' );
+    }
+
+
     public function testStrToTime() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsInt( OK::strtotime( 'now' ) );
