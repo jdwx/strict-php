@@ -68,6 +68,19 @@ final class TypeIs {
     }
 
 
+    /** @return array<int|string, string|list<string>> */
+    public static function arrayStringOrListString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            foreach ( $i_value as $val ) {
+                self::stringOrListString( $val, $i_nstContext );
+            }
+            /** @phpstan-var array<string|list<string>> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'array<string|list<string>>', $i_value, $i_nstContext );
+    }
+
+
     /** @return array<int|string, string|Stringable> */
     public static function arrayStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
@@ -169,6 +182,13 @@ final class TypeIs {
     public static function mapString( mixed $i_value, ?string $i_nstContext = null ) : array {
         /** @phpstan-ignore return.type */
         return self::arrayString( $i_value, $i_nstContext );
+    }
+
+
+    /** @return array<string, list<string>|string> */
+    public static function mapStringOrListString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        /** @phpstan-ignore return.type */
+        return self::arrayStringOrListString( $i_value, $i_nstContext );
     }
 
 

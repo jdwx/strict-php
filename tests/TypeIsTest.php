@@ -69,6 +69,20 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testArrayStringOrListString() : void {
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayStringOrListString( [ 'foo', 'bar' ] ) );
+        self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], TypeIs::arrayStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::arrayStringOrListString( 123 );
+    }
+
+
+    public function testArrayStringOrListStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::arrayStringOrListString( 'not an array' );
+    }
+
+
     public function testArrayStringy() : void {
         $stringable = self::stringable();
         self::assertSame( [ 'foo', $stringable ], TypeIs::arrayStringy( [ 'foo', $stringable ] ) );
@@ -191,6 +205,19 @@ final class TypeIsTest extends TestCase {
     public function testMapStringForNotArray() : void {
         self::expectException( TypeException::class );
         TypeIs::mapString( 'not an array' );
+    }
+
+
+    public function testMapStringOrListString() : void {
+        self::assertSame( [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ], TypeIs::mapStringOrListString( [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::mapStringOrListString( [ 'foo' => 123, 'baz' => [ 'qux', 'quux' ] ] );
+    }
+
+
+    public function testMapStringOrListStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::mapStringOrListString( 'not an array' );
     }
 
 
