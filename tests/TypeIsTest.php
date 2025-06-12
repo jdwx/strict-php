@@ -131,6 +131,83 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testIterable() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsIterable( TypeIs::iterable( [ 'foo' ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::iterable( 'not iterable' );
+    }
+
+
+    public function testIterableNullableString() : void {
+        self::assertSame( [ 'foo', null ], TypeIs::iterableNullableString( [ 'foo', null ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::iterableNullableString( [ 'foo', 123 ] );
+    }
+
+
+    public function testIterableNullableStringForNotIterable() : void {
+        self::expectException( TypeException::class );
+        TypeIs::iterableNullableString( 123 );
+    }
+
+
+    public function testIterableNullableStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame( [ 'foo', $stringable ], TypeIs::iterableNullableStringy( [ 'foo', $stringable ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::iterableNullableStringy( [ 'foo', 123 ] );
+    }
+
+
+    public function testIterableNullableStringyForNotIterable() : void {
+        self::expectException( TypeException::class );
+        TypeIs::iterableNullableStringy( 123 );
+    }
+
+
+    public function testIterableString() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsIterable( TypeIs::iterableString( [ 'foo', 'bar' ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::iterableString( [ 'baz', 123 ] );
+    }
+
+
+    public function testIterableStringForNotIterable() : void {
+        self::expectException( TypeException::class );
+        TypeIs::iterableString( 123 );
+    }
+
+
+    public function testIterableStringOrListString() : void {
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::iterableStringOrListString( [ 'foo', 'bar' ] ) );
+        self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], TypeIs::iterableStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::iterableStringOrListString( 123 );
+    }
+
+
+    public function testIterableStringOrListStringForNotIterable() : void {
+        self::expectException( TypeException::class );
+        TypeIs::iterableStringOrListString( 'not iterable' );
+    }
+
+
+    public function testIterableStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame( [ 'foo', $stringable ], TypeIs::iterableStringy( [ 'foo', $stringable ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::iterableStringy( [ 'foo', 123 ] );
+    }
+
+
+    public function testIterableStringyForNotIterable() : void {
+        self::expectException( TypeException::class );
+        TypeIs::iterableStringy( 123 );
+    }
+
+
     public function testListNullableString() : void {
         self::assertSame( [ 'foo', null ], TypeIs::listNullableString( [ 'foo', null ] ) );
         self::expectException( TypeException::class );

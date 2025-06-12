@@ -128,6 +128,88 @@ final class TypeIs {
     }
 
 
+    /** @return iterable<int|string, mixed> */
+    public static function iterable( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            return $i_value;
+        }
+        throw new TypeException( 'iterable', $i_value, $i_nstContext );
+    }
+
+
+    /** @return iterable<int|string, ?string> */
+    public static function iterableNullableString( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            foreach ( $i_value as $val ) {
+                if ( ! is_string( $val ) && ! is_null( $val ) ) {
+                    throw new TypeException( '?string value', $val, $i_nstContext );
+                }
+            }
+            /** @phpstan-var iterable<int|string, ?string> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'iterable<?string>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return iterable<int|string, string|Stringable|null> */
+    public static function iterableNullableStringy( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            foreach ( $i_value as $val ) {
+                if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) && ! is_null( $val ) ) {
+                    throw new TypeException( 'string|Stringable|null value', $val, $i_nstContext );
+                }
+            }
+            /** @phpstan-var iterable<int|string, string|Stringable|null> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'iterable<?string|Stringable>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return iterable<int|string, string> */
+    public static function iterableString( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            foreach ( $i_value as $val ) {
+                if ( ! is_string( $val ) ) {
+                    throw new TypeException( 'string value', $val, $i_nstContext );
+                }
+            }
+            /** @phpstan-var iterable<int|string, string> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'iterable<string>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return iterable<int|string, string|list<string>> */
+    public static function iterableStringOrListString( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            foreach ( $i_value as $val ) {
+                self::stringOrListString( $val, $i_nstContext );
+            }
+            /** @phpstan-var iterable<int|string, string|list<string>> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'iterable<string|list<string>>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return iterable<int|string, string|Stringable> */
+    public static function iterableStringy( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            foreach ( $i_value as $val ) {
+                if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) ) {
+                    throw new TypeException( 'string|Stringable value', $val, $i_nstContext );
+                }
+            }
+            /** @phpstan-var iterable<int|string, string|Stringable> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'iterable<string|Stringable>', $i_value, $i_nstContext );
+    }
+
+
     /** @return list<string|null> */
     public static function listNullableString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
