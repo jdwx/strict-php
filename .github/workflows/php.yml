@@ -36,7 +36,7 @@ jobs:
       run: sudo pecl install ast
 
     - name: Activate ast
-      run: echo "extension=ast.so" | tee /etc/php/8.3/cli/conf.d/99-ast.ini
+      run: echo "extension=ast.so" | sudo tee /etc/php/8.3/cli/conf.d/99-ast.ini
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
