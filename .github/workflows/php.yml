@@ -29,6 +29,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
+    - name: Install ast
+      run: sudo pecl install ast
+
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
