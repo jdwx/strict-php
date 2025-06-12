@@ -25,6 +25,32 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testArrayNullableString() : void {
+        self::assertSame( [ 'foo', null ], TypeIs::arrayNullableString( [ 'foo', null ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::arrayNullableString( [ 'foo', 123 ] );
+    }
+
+
+    public function testArrayNullableStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::arrayNullableString( 'not an array' );
+    }
+
+
+    public function testArrayString() : void {
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayString( [ 'foo', 'bar' ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::arrayString( [ 'foo', 123 ] );
+    }
+
+
+    public function testArrayStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::arrayString( 'not an array' );
+    }
+
+
     public function testBool() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsBool( TypeIs::bool( true ) );
@@ -56,6 +82,27 @@ final class TypeIsTest extends TestCase {
         self::assertIsInt( TypeIs::int( 123 ) );
         self::expectException( TypeException::class );
         TypeIs::int( 'not an int' );
+    }
+
+
+    public function testListNullableString() : void {
+        self::assertSame( [ 'foo', null ], TypeIs::listNullableString( [ 'foo', null ] ) );
+        self::expectException( TypeException::class );
+        self::expectExceptionMessage( '?string value' );
+        self::assertSame( [ 'foo', null ], TypeIs::listNullableString( [ 'foo', 123 ] ) );
+    }
+
+
+    public function testListNullableStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::listNullableString( 'not an array' );
+    }
+
+
+    public function testListNullableStringForStringKey() : void {
+        self::expectException( TypeException::class );
+        self::expectExceptionMessage( 'int key' );
+        TypeIs::listNullableString( [ 'foo', 'bar' => null ] );
     }
 
 
