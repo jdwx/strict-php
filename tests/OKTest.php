@@ -187,6 +187,41 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testPregSplit() : void {
+        $result = OK::preg_split( '/\s+/', 'this is a test' );
+        self::assertSame( [ 'this', 'is', 'a', 'test' ], $result );
+
+        $result = OK::preg_split( '/\s+/', 'this is a test', -1, PREG_SPLIT_OFFSET_CAPTURE );
+        self::assertSame(
+            [ [ 'this', 0 ], [ 'is', 5 ], [ 'a', 8 ], [ 'test', 10 ] ],
+            $result
+        );
+
+        self::expectException( UnexpectedFailureException::class );
+        OK::preg_split( '/test#', 'this is a test' );
+    }
+
+
+    public function testPregSplitList() : void {
+        $result = OK::preg_split_list( '/\s+/', 'this is a test' );
+        self::assertSame( [ 'this', 'is', 'a', 'test' ], $result );
+        self::expectException( TypeException::class );
+        OK::preg_split_list( '/\s+/', 'this is a test', -1, PREG_SPLIT_OFFSET_CAPTURE );
+    }
+
+
+    public function testPregSplitOffset() : void {
+        $r = OK::preg_split_offset( '/\s+/', 'this is a test', -1, PREG_SPLIT_OFFSET_CAPTURE );
+        self::assertSame(
+            [ [ 'this', 0 ], [ 'is', 5 ], [ 'a', 8 ], [ 'test', 10 ] ],
+            $r
+        );
+
+        self::expectException( TypeException::class );
+        OK::preg_split_offset( '/\s+/', 'this is a test' );
+    }
+
+
     public function testRealPath() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( OK::realpath( __FILE__ ) );

@@ -220,6 +220,39 @@ final class OK {
     }
 
 
+    /** @return list<array<int|string, int|string>|string> */
+    public static function preg_split( string $pattern, string $subject, int $limit = -1, int $flags = 0 ) : array {
+        $result = @preg_split( $pattern, $subject, $limit, $flags );
+        if ( is_array( $result ) ) {
+            return $result;
+        }
+        throw new UnexpectedFailureException( 'preg_split', preg_last_error_msg(),
+            0, null );
+    }
+
+
+    /** @return list<string> */
+    public static function preg_split_list( string $pattern, string $subject, int $limit = -1,
+                                            int    $flags = 0 ) : array {
+        return TypeIs::listString( self::preg_split( $pattern, $subject, $limit, $flags ) );
+    }
+
+
+    /**
+     * @return list<array<int|string, int|string>>
+     * @suppress PhanPartialTypeMismatchReturn
+     */
+    public static function preg_split_offset( string $pattern, string $subject, int $limit = -1,
+                                              int    $flags = 0 ) : array {
+        $r = self::preg_split( $pattern, $subject, $limit, $flags );
+        foreach ( $r as $v ) {
+            TypeIs::array( $v, 'preg_split_offset result' );
+        }
+        /** @phpstan-var list<array<int|string, int|string>> */
+        return $r;
+    }
+
+
     public static function realpath( string $path ) : string {
         return TypeIs::string( realpath( $path ), 'realpath return value' );
     }
