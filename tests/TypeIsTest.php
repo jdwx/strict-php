@@ -229,6 +229,27 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testListNullableStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame( [ 'foo', $stringable ], TypeIs::listNullableStringy( [ 'foo', $stringable ] ) );
+        self::expectException( TypeException::class );
+        self::assertSame( [ 'foo', $stringable ], TypeIs::listNullableStringy( [ 'foo', 123 ] ) );
+    }
+
+
+    public function testListNullableStringyForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::listNullableStringy( 'not an array' );
+    }
+
+
+    public function testListNullableStringyForStringKey() : void {
+        self::expectException( TypeException::class );
+        self::expectExceptionMessage( 'int key' );
+        TypeIs::listNullableStringy( [ 'foo', 'bar' => null ] );
+    }
+
+
     public function testListString() : void {
         self::assertSame( [ 'foo', 'bar' ], TypeIs::listString( [ 'foo', 'bar' ] ) );
         self::expectException( TypeException::class );
@@ -245,6 +266,48 @@ final class TypeIsTest extends TestCase {
     public function testListStringForValueNotString() : void {
         self::expectException( TypeException::class );
         TypeIs::listString( [ 'foo', 123 ] );
+    }
+
+
+    public function testListStringOrListString() : void {
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::listStringOrListString( [ 'foo', 'bar' ] ) );
+        self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], TypeIs::listStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::listStringOrListString( [ 123 ] );
+    }
+
+
+    public function testListStringOrListStringForKeyNotInt() : void {
+        self::expectException( TypeException::class );
+        TypeIs::listStringOrListString( [ 'foo' => 'bar' ] );
+    }
+
+
+    public function testListStringOrListStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::listStringOrListString( 'not an array' );
+    }
+
+
+    public function testListStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame( [ 'foo', $stringable ], TypeIs::listStringy( [ 'foo', $stringable ] ) );
+        self::expectException( TypeException::class );
+        self::assertSame( [ 'foo', $stringable ], TypeIs::listStringy( [ 'foo', 123 ] ) );
+    }
+
+
+    public function testListStringyForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::listStringy( 'not an array' );
+    }
+
+
+    public function testListStringyForStringKey() : void {
+        $stringable = self::stringable();
+        self::expectException( TypeException::class );
+        self::expectExceptionMessage( 'int key' );
+        TypeIs::listStringy( [ 'foo', 'bar' => $stringable ] );
     }
 
 

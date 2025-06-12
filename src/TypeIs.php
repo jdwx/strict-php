@@ -228,6 +228,24 @@ final class TypeIs {
     }
 
 
+    /** @return list<string|Stringable> */
+    public static function listNullableStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            array_walk( $i_value, function ( $val, $key ) use ( $i_nstContext ) : void {
+                if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) && ! is_null( $val ) ) {
+                    throw new TypeException( 'string|Stringable|null value', $val, $i_nstContext );
+                }
+                if ( ! is_int( $key ) ) {
+                    throw new TypeException( 'int key', $key, $i_nstContext );
+                }
+            } );
+            /** @phpstan-var list<string|Stringable> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'list<?string|Stringable>', $i_value, $i_nstContext );
+    }
+
+
     /** @return list<string> */
     public static function listString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
@@ -243,6 +261,38 @@ final class TypeIs {
             return $i_value;
         }
         throw new TypeException( 'list<string>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return list<list<string>|string> */
+    public static function listStringOrListString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            foreach ( $i_value as $key => $val ) {
+                self::int( $key, $i_nstContext );
+                self::stringOrListString( $val, $i_nstContext );
+            }
+            /** @phpstan-var list<string|list<string>> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'list<string|list<string>>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return list<string|Stringable> */
+    public static function listStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            array_walk( $i_value, function ( $val, $key ) use ( $i_nstContext ) : void {
+                if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) ) {
+                    throw new TypeException( 'string|Stringable value', $val, $i_nstContext );
+                }
+                if ( ! is_int( $key ) ) {
+                    throw new TypeException( 'int key', $key, $i_nstContext );
+                }
+            } );
+            /** @phpstan-var list<string|Stringable> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'list<string|Stringable>', $i_value, $i_nstContext );
     }
 
 
