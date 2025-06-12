@@ -32,5 +32,18 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Install phpstan
+      run: composer require phpstan/phpstan
+
+    - name: Install phan
+      run: composer require phan/phan
+    
     - name: Run test suite
       run: composer run-script test
+
+    - name: Run phan
+      run: composer run-script phan
+
+    - name: Run phpstan
+      run: composer run-script phpstan
+      
