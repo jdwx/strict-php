@@ -16,7 +16,7 @@
     "phpunit/phpunit": "^10"
   },
   "scripts": {
-    "phan": "PHAN_DISABLE_XDEBUG_WARN=1 php vendor/bin/phan -S --analyze-twice",
+    "phan": "PHAN_DISABLE_XDEBUG_WARN=1 phan --no-progress-bar -S --analyze-twice",
     "phpstan": "php -d xdebug.so vendor/bin/phpstan",
     "test": "vendor/bin/phpunit tests"
   }
