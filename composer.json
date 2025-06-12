@@ -11,10 +11,12 @@
     "php": ">=8.3"
   },
   "require-dev": {
+	"phan/phan": "^v5",
+    "phpstan/phpstan": "^2.0",
     "phpunit/phpunit": "^10"
   },
   "scripts": {
-    "phan": "sh phan.sh",
+    "phan": "PHAN_DISABLE_XDEBUG_WARN=1 vendor/bin/phan -m text -S --analyze-twice",
     "phpstan": "phpstan",
     "test": "vendor/bin/phpunit tests"
   }
