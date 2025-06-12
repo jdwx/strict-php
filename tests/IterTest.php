@@ -55,11 +55,11 @@ final class IterTest extends TestCase {
 
     /** @suppress PhanTypeMismatchArgument */
     public function testListStringOrNull() : void {
-        self::assertSame( [ 'a', 'b', null ], iterator_to_array( Iter::listStringOrNull( [ 'a', 'b', null ] ) ) );
-        self::assertSame( [ 'a', 'b', null ], iterator_to_array( Iter::listStringOrNull( [ 'a', 'foo' => 'b', null ] ) ) );
+        self::assertSame( [ 'a', 'b', null ], iterator_to_array( Iter::listNullableString( [ 'a', 'b', null ] ) ) );
+        self::assertSame( [ 'a', 'b', null ], iterator_to_array( Iter::listNullableString( [ 'a', 'foo' => 'b', null ] ) ) );
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
-        iterator_to_array( Iter::listStringOrNull( [ new \stdClass() ] ) );
+        iterator_to_array( Iter::listNullableString( [ new \stdClass() ] ) );
     }
 
 
@@ -107,11 +107,11 @@ final class IterTest extends TestCase {
 
 
         };
-        self::assertSame( [ 'a', $str, null ], iterator_to_array( Iter::listStringyOrNull( [ 'a', $str, null ] ) ) );
-        self::assertSame( [ 'a', $str, null ], iterator_to_array( Iter::listStringyOrNull( [ 'a', 'foo' => $str, null ] ) ) );
+        self::assertSame( [ 'a', $str, null ], iterator_to_array( Iter::listNullableStringy( [ 'a', $str, null ] ) ) );
+        self::assertSame( [ 'a', $str, null ], iterator_to_array( Iter::listNullableStringy( [ 'a', 'foo' => $str, null ] ) ) );
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
-        iterator_to_array( Iter::listStringyOrNull( [ 1.23 ] ) );
+        iterator_to_array( Iter::listNullableStringy( [ 1.23 ] ) );
     }
 
 
@@ -182,7 +182,7 @@ final class IterTest extends TestCase {
     /** @suppress PhanTypeMismatchArgument */
     public function testMapStringOrNull() : void {
         $r = [ 'foo' => 'foo', 'bar' => null ];
-        self::assertSame( $r, iterator_to_array( Iter::mapStringOrNull( $r ) ) );
+        self::assertSame( $r, iterator_to_array( Iter::mapNullableString( $r ) ) );
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         iterator_to_array( Iter::mapString( [ 'foo' => 1 ] ) );
@@ -220,10 +220,10 @@ final class IterTest extends TestCase {
 
         };
         $r = [ 'foo' => 'Foo!', 'bar' => $str, 'baz' => null ];
-        self::assertSame( $r, iterator_to_array( Iter::mapStringyOrNull( $r ) ) );
+        self::assertSame( $r, iterator_to_array( Iter::mapNullableStringy( $r ) ) );
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
-        iterator_to_array( Iter::mapStringyOrNull( [ 'foo' => 1 ] ) );
+        iterator_to_array( Iter::mapNullableStringy( [ 'foo' => 1 ] ) );
 
 
     }

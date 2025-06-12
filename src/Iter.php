@@ -47,6 +47,28 @@ final class Iter {
 
 
     /**
+     * @param iterable<string|null> $i_it
+     * @return iterable<int, string|null>
+     */
+    public static function listNullableString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $v ) {
+            yield TypeIs::stringOrNull( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<string|Stringable|null> $i_it
+     * @return iterable<string|Stringable|null>
+     */
+    public static function listNullableStringy( iterable $i_it ) : iterable {
+        foreach ( $i_it as $v ) {
+            yield TypeIs::stringyOrNull( $v );
+        }
+    }
+
+
+    /**
      * @param iterable<string> $i_it
      * @return iterable<int, string>
      */
@@ -60,11 +82,11 @@ final class Iter {
     /**
      * @param iterable<string|null> $i_it
      * @return iterable<int, string|null>
+     * @deprecated Use listNullableString() instead.
+     * @codeCoverageIgnore
      */
     public static function listStringOrNull( iterable $i_it ) : iterable {
-        foreach ( $i_it as $v ) {
-            yield TypeIs::stringOrNull( $v );
-        }
+        return self::listNullableString( $i_it );
     }
 
 
@@ -97,11 +119,11 @@ final class Iter {
     /**
      * @param iterable<string|Stringable|null> $i_it
      * @return iterable<string|Stringable|null>
+     * @deprecated Use listNullableStringy() instead.
+     * @codeCoverageIgnore
      */
     public static function listStringyOrNull( iterable $i_it ) : iterable {
-        foreach ( $i_it as $v ) {
-            yield TypeIs::stringyOrNull( $v );
-        }
+        return self::listNullableStringy( $i_it );
     }
 
 
@@ -139,6 +161,28 @@ final class Iter {
 
 
     /**
+     * @param iterable<int|string, string|null> $i_it
+     * @return iterable<string, string|null>
+     */
+    public static function mapNullableString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            yield strval( $k ) => TypeIs::stringOrNull( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, string|Stringable|null> $i_it
+     * @return iterable<string, string|Stringable|null>
+     */
+    public static function mapNullableStringy( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            yield strval( $k ) => TypeIs::stringyOrNull( $v );
+        }
+    }
+
+
+    /**
      * @param iterable<int|string, string> $i_it
      * @return iterable<string, string>
      */
@@ -163,11 +207,11 @@ final class Iter {
     /**
      * @param iterable<int|string, string|null> $i_it
      * @return iterable<string, string|null>
+     * @deprecated Use mapNullableString() instead.
+     * @codeCoverageIgnore
      */
     public static function mapStringOrNull( iterable $i_it ) : iterable {
-        foreach ( $i_it as $k => $v ) {
-            yield strval( $k ) => TypeIs::stringOrNull( $v );
-        }
+        return self::mapNullableString( $i_it );
     }
 
 
@@ -185,11 +229,11 @@ final class Iter {
     /**
      * @param iterable<int|string, string|Stringable|null> $i_it
      * @return iterable<string, string|Stringable|null>
+     * @deprecated Use mapNullableStringy() instead.
+     * @codeCoverageIgnore
      */
     public static function mapStringyOrNull( iterable $i_it ) : iterable {
-        foreach ( $i_it as $k => $v ) {
-            yield strval( $k ) => TypeIs::stringyOrNull( $v );
-        }
+        return self::mapNullableStringy( $i_it );
     }
 
 

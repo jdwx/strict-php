@@ -44,6 +44,35 @@ final class CastTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
+    public function testListNullableString() : void {
+        self::assertSame( [ 'a', 'b', null ], Cast::listNullableString( [ 'a', 'b', null ] ) );
+        self::assertSame( [ 'a', 'b', null ], Cast::listNullableString( [ 'a', 'foo' => 'b', null ] ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::listNullableString( [ new \stdClass() ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testListNullableStringy() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'a';
+            }
+
+
+        };
+        self::assertSame( [ 'a', $str, null ], Cast::listNullableStringy( [ 'a', $str, null ] ) );
+        self::assertSame( [ 'a', $str, null ], Cast::listNullableStringy( [ 'a', 'foo' => $str, null ] ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::listNullableStringy( [ 1.23 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
     public function testListString() : void {
         self::assertSame( [ 'a', 'b', 'c' ], Cast::listString( [ 'a', 'b', 'c' ] ) );
         self::assertSame( [ 'a', 'b', 'c' ], Cast::listString( [ 'a', 'foo' => 'b', 'c' ] ) );
@@ -66,16 +95,6 @@ final class CastTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
-    public function testListStringOrNull() : void {
-        self::assertSame( [ 'a', 'b', null ], Cast::listStringOrNull( [ 'a', 'b', null ] ) );
-        self::assertSame( [ 'a', 'b', null ], Cast::listStringOrNull( [ 'a', 'foo' => 'b', null ] ) );
-        self::expectException( TypeException::class );
-        /** @phpstan-ignore argument.type */
-        Cast::listStringOrNull( [ new \stdClass() ] );
-    }
-
-
-    /** @suppress PhanTypeMismatchArgument */
     public function testListStringy() : void {
         $str = new class implements \Stringable {
 
@@ -91,25 +110,6 @@ final class CastTest extends TestCase {
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         Cast::listStringy( [ 1 ] );
-    }
-
-
-    /** @suppress PhanTypeMismatchArgument */
-    public function testListStringyOrNull() : void {
-        $str = new class implements \Stringable {
-
-
-            public function __toString() : string {
-                return 'a';
-            }
-
-
-        };
-        self::assertSame( [ 'a', $str, null ], Cast::listStringyOrNull( [ 'a', $str, null ] ) );
-        self::assertSame( [ 'a', $str, null ], Cast::listStringyOrNull( [ 'a', 'foo' => $str, null ] ) );
-        self::expectException( TypeException::class );
-        /** @phpstan-ignore argument.type */
-        Cast::listStringyOrNull( [ 1.23 ] );
     }
 
 
@@ -140,6 +140,35 @@ final class CastTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
+    public function testMapNullableString() : void {
+        $r = [ 'foo' => 'foo', 'bar' => null ];
+        self::assertSame( $r, Cast::mapNullableString( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::mapString( [ 'foo' => 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testMapNullableStringy() : void {
+        $str = new class implements \Stringable {
+
+
+            public function __toString() : string {
+                return 'Bar!';
+            }
+
+
+        };
+        $r = [ 'foo' => 'Foo!', 'bar' => $str, 'baz' => null ];
+        self::assertSame( $r, Cast::mapNullableStringy( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::mapNullableStringy( [ 'foo' => 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
     public function testMapString() : void {
         $r = [ 'foo' => 'foo', 'bar' => 'bar' ];
         self::assertSame( $r, Cast::mapString( $r ) );
@@ -160,16 +189,6 @@ final class CastTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
-    public function testMapStringOrNull() : void {
-        $r = [ 'foo' => 'foo', 'bar' => null ];
-        self::assertSame( $r, Cast::mapStringOrNull( $r ) );
-        self::expectException( TypeException::class );
-        /** @phpstan-ignore argument.type */
-        Cast::mapString( [ 'foo' => 1 ] );
-    }
-
-
-    /** @suppress PhanTypeMismatchArgument */
     public function testMapStringy() : void {
         $str = new class implements \Stringable {
 
@@ -185,27 +204,6 @@ final class CastTest extends TestCase {
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         Cast::mapStringy( [ 'foo' => 1 ] );
-    }
-
-
-    /** @suppress PhanTypeMismatchArgument */
-    public function testMapStringyOrNull() : void {
-        $str = new class implements \Stringable {
-
-
-            public function __toString() : string {
-                return 'Bar!';
-            }
-
-
-        };
-        $r = [ 'foo' => 'Foo!', 'bar' => $str, 'baz' => null ];
-        self::assertSame( $r, Cast::mapStringyOrNull( $r ) );
-        self::expectException( TypeException::class );
-        /** @phpstan-ignore argument.type */
-        Cast::mapStringyOrNull( [ 'foo' => 1 ] );
-
-
     }
 
 

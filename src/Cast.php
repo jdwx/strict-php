@@ -41,6 +41,24 @@ final class Cast {
 
 
     /**
+     * @param iterable<int|string, ?string> $i_value
+     * @return list<?string>
+     */
+    public static function listNullableString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::listNullableString( $i_value ), false );
+    }
+
+
+    /**
+     * @param iterable<int|string, string|Stringable|null> $i_value
+     * @return list<string|Stringable|null>
+     */
+    public static function listNullableStringy( iterable $i_value ) : array {
+        return iterator_to_array( Iter::listNullableStringy( $i_value ), false );
+    }
+
+
+    /**
      * @param iterable<int|string, string> $i_value
      * @return list<string>
      */
@@ -61,9 +79,11 @@ final class Cast {
     /**
      * @param iterable<int|string, ?string> $i_value
      * @return list<?string>
+     * @deprecated Use listNullableString() instead.
+     * @codeCoverageIgnore
      */
     public static function listStringOrNull( iterable $i_value ) : array {
-        return iterator_to_array( Iter::listStringOrNull( $i_value ), false );
+        return self::listNullableString( $i_value );
     }
 
 
@@ -79,9 +99,11 @@ final class Cast {
     /**
      * @param iterable<int|string, string|Stringable|null> $i_value
      * @return list<string|Stringable|null>
+     * @deprecated Use listNullableStringy() instead.
+     * @codeCoverageIgnore
      */
     public static function listStringyOrNull( iterable $i_value ) : array {
-        return iterator_to_array( Iter::listStringyOrNull( $i_value ), false );
+        return self::listNullableStringy( $i_value );
     }
 
 
@@ -113,6 +135,24 @@ final class Cast {
 
 
     /**
+     * @param iterable<int|string, ?string> $i_value
+     * @return array<string, ?string>
+     */
+    public static function mapNullableString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::mapNullableString( $i_value ) );
+    }
+
+
+    /**
+     * @param iterable<int|string, string|Stringable|null> $i_value
+     * @return array<string, string|Stringable|null>
+     */
+    public static function mapNullableStringy( iterable $i_value ) : array {
+        return iterator_to_array( Iter::mapNullableStringy( $i_value ) );
+    }
+
+
+    /**
      * @param iterable<int|string, string> $i_value
      * @return array<string, string>
      */
@@ -133,9 +173,11 @@ final class Cast {
     /**
      * @param iterable<int|string, ?string> $i_value
      * @return array<string, ?string>
+     * @deprecated Use mapNullableString() instead.
+     * @codeCoverageIgnore
      */
     public static function mapStringOrNull( iterable $i_value ) : array {
-        return iterator_to_array( Iter::mapStringOrNull( $i_value ) );
+        return self::mapNullableString( $i_value );
     }
 
 
@@ -151,9 +193,11 @@ final class Cast {
     /**
      * @param iterable<int|string, string|Stringable|null> $i_value
      * @return array<string, string|Stringable|null>
+     * @deprecated Use mapNullableStringy() instead.
+     * @codeCoverageIgnore
      */
     public static function mapStringyOrNull( iterable $i_value ) : array {
-        return iterator_to_array( Iter::mapStringyOrNull( $i_value ) );
+        return self::mapNullableStringy( $i_value );
     }
 
 
