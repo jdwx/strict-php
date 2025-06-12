@@ -20,17 +20,29 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class OK {
 
 
+    /**
+     * @param resource $handle
+     * @suppress PhanTypeMismatchDeclaredParamNullable
+     */
     public static function fclose( mixed $handle ) : bool {
         return TypeIs::true( @fclose( $handle ), 'fclose return value' );
     }
 
 
-    /** @suppress PhanTypeMismatchArgumentNullableInternal */
+    /**
+     * @param resource $stream
+     * @suppress PhanTypeMismatchDeclaredParamNullable
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
     public static function fgets( mixed $stream, ?int $length = null ) : string {
+        assert( $length === null || $length >= 0, 'Length must be null or nonnegative' );
         return TypeIs::string( @fgets( $stream, $length ), 'fgets return value' );
     }
 
 
+    /**
+     * @param resource|null $context
+     */
     public static function file_get_contents( string $filename, bool $use_include_path = false,
                                               mixed  $context = null ) : string {
         return TypeIs::string( @file_get_contents( $filename, $use_include_path, $context ),
@@ -38,7 +50,10 @@ final class OK {
     }
 
 
-    /** @suppress PhanPossiblyNullTypeArgumentInternal */
+    /**
+     * @suppress PhanPossiblyNullTypeArgumentInternal
+     * @param resource|null $context
+     */
     public static function file_put_contents( string $filename, mixed $data, int $flags = 0,
                                               mixed  $context = null ) : int {
         return TypeIs::int( @file_put_contents( $filename, $data, $flags, $context ),
@@ -46,7 +61,12 @@ final class OK {
     }
 
 
-    /** @suppress PhanPossiblyNullTypeArgumentInternal */
+    /**
+     * @param resource|null $context
+     * @return resource
+     * @suppress PhanPossiblyNullTypeArgumentInternal
+     * @suppress PhanTypeMismatchDeclaredReturnNullable
+     */
     public static function fopen( string $filename, string $mode, bool $use_include_path = false,
                                   mixed  $context = null ) : mixed {
         return TypeIs::resource( @fopen( $filename, $mode, $use_include_path, $context ),
@@ -54,13 +74,23 @@ final class OK {
     }
 
 
+    /**
+     * @param resource $handle
+     * @suppress PhanTypeMismatchDeclaredParamNullable
+     */
     public static function fread( mixed $handle, int $length ) : string {
+        assert( $length > 0, 'Length must be greater than 0' );
         return TypeIs::string( @fread( $handle, $length ), 'fread return value' );
     }
 
 
-    /** @suppress PhanTypeMismatchArgumentNullableInternal */
+    /**
+     * @param resource $handle
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     * @suppress PhanTypeMismatchDeclaredParamNullable
+     */
     public static function fwrite( mixed $handle, string $string, ?int $length = null ) : int {
+        assert( $length === null || $length >= 0, 'Length must be null or nonnegative' );
         return TypeIs::int( @fwrite( $handle, $string, $length ) );
     }
 
@@ -82,6 +112,7 @@ final class OK {
 
     public static function json_decode( string $json, bool $assoc = false, int $depth = 512,
                                         int    $options = 0 ) : mixed {
+        assert( $depth > 0, 'Depth must be greater than 0' );
         $x = json_decode( $json, $assoc, $depth, $options );
         if ( json_last_error() === JSON_ERROR_NONE ) {
             return $x;

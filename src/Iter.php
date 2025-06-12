@@ -15,7 +15,7 @@ final class Iter {
 
     /**
      * @param iterable<mixed> $i_it
-     * @return iterable<mixed>
+     * @return iterable<int, mixed>
      */
     public static function list( iterable $i_it ) : iterable {
         foreach ( $i_it as $v ) {
@@ -26,7 +26,7 @@ final class Iter {
 
     /**
      * @param iterable<float> $i_it
-     * @return iterable<float>
+     * @return iterable<int, float>
      */
     public static function listFloat( iterable $i_it ) : iterable {
         foreach ( $i_it as $v ) {
@@ -37,7 +37,7 @@ final class Iter {
 
     /**
      * @param iterable<int> $i_it
-     * @return iterable<int>
+     * @return iterable<int, int>
      */
     public static function listInt( iterable $i_it ) : iterable {
         foreach ( $i_it as $v ) {
@@ -48,7 +48,7 @@ final class Iter {
 
     /**
      * @param iterable<string> $i_it
-     * @return iterable<string>
+     * @return iterable<int, string>
      */
     public static function listString( iterable $i_it ) : iterable {
         foreach ( $i_it as $v ) {
@@ -59,7 +59,7 @@ final class Iter {
 
     /**
      * @param iterable<string|null> $i_it
-     * @return iterable<string|null>
+     * @return iterable<int, string|null>
      */
     public static function listStringOrNull( iterable $i_it ) : iterable {
         foreach ( $i_it as $v ) {
@@ -69,12 +69,16 @@ final class Iter {
 
 
     /**
-     * @param iterable<list<string>|string> $i_it
-     * @return iterable<list<string>|string>
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<int, list<string>|string>
      */
     public static function listStringOrStringList( iterable $i_it ) : iterable {
         foreach ( $i_it as $v ) {
-            yield TypeIs::stringOrListString( $v );
+            if ( is_array( $v ) ) {
+                yield iterator_to_array( self::listString( $v ), false );
+            } else {
+                yield TypeIs::string( $v );
+            }
         }
     }
 
@@ -102,9 +106,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, mixed> $i_it
+     * @param iterable<int|string, mixed> $i_it
      * @return \Generator<string, mixed>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function map( iterable $i_it ) : \Generator {
         foreach ( $i_it as $k => $v ) {
@@ -114,9 +117,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, float> $i_it
+     * @param iterable<int|string, float> $i_it
      * @return iterable<string, float>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function mapFloat( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
@@ -126,9 +128,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, int> $i_it
+     * @param iterable<int|string, int> $i_it
      * @return iterable<string, int>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function mapInt( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
@@ -138,9 +139,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, string> $i_it
+     * @param iterable<int|string, string> $i_it
      * @return iterable<string, string>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function mapString( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
@@ -150,9 +150,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, list<string>|string> $i_it
+     * @param iterable<int|string, list<string>|string> $i_it
      * @return iterable<string, list<string>|string>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function mapStringOrListString( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
@@ -162,9 +161,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, string|null> $i_it
+     * @param iterable<int|string, string|null> $i_it
      * @return iterable<string, string|null>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function mapStringOrNull( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
@@ -174,9 +172,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, string|Stringable> $i_it
+     * @param iterable<int|string, string|Stringable> $i_it
      * @return iterable<string, string|Stringable>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function mapStringy( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
@@ -186,9 +183,8 @@ final class Iter {
 
 
     /**
-     * @param iterable<string, string|Stringable|null> $i_it
+     * @param iterable<int|string, string|Stringable|null> $i_it
      * @return iterable<string, string|Stringable|null>
-     * @noinspection PhpCastIsUnnecessaryInspection
      */
     public static function mapStringyOrNull( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {

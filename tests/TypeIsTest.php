@@ -59,6 +59,25 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testListString() : void {
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::listString( [ 'foo', 'bar' ] ) );
+        self::expectException( TypeException::class );
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::listString( [ 'foo', 'baz' => 'bar' ] ) );
+    }
+
+
+    public function testListStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::listString( 'not an array' );
+    }
+
+
+    public function testListStringForValueNotString() : void {
+        self::expectException( TypeException::class );
+        TypeIs::listString( [ 'foo', 123 ] );
+    }
+
+
     public function testObject() : void {
         self::assertInstanceOf( $this::class, TypeIs::object( $this ) );
         self::expectException( TypeException::class );
@@ -84,7 +103,6 @@ final class TypeIsTest extends TestCase {
     public function testStringOrListString() : void {
         self::assertSame( 'foo', TypeIs::stringOrListString( 'foo' ) );
         self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrListString( [ 'foo', 'bar' ] ) );
-        self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrListString( [ 'foo', 'baz' => 'bar' ] ) );
         self::expectException( TypeException::class );
         TypeIs::stringOrListString( 123 );
     }

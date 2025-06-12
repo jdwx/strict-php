@@ -35,6 +35,7 @@ class TypeException extends StrictException {
         } elseif ( false === $value ) {
             $stValue = 'false';
         } else {
+            assert( is_int( $value ) || is_float( $value ) );
             $stValue = strval( $value );
         }
         $nstContext = $nstContext ?? 'type check';

@@ -55,6 +55,24 @@ final class TypeIs {
     }
 
 
+    /** @return list<string> */
+    public static function listString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            array_walk( $i_value, function ( $val, $key ) use ( $i_nstContext ) : void {
+                if ( ! is_string( $val ) ) {
+                    throw new TypeException( 'string value', $val, $i_nstContext );
+                }
+                if ( ! is_int( $key ) ) {
+                    throw new TypeException( 'int key', $key, $i_nstContext );
+                }
+            } );
+            /** @phpstan-var list<string> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'list<string>', $i_value, $i_nstContext );
+    }
+
+
     public static function object( mixed $i_value, ?string $i_nstContext = null ) : object {
         if ( is_object( $i_value ) ) {
             return $i_value;
@@ -63,6 +81,10 @@ final class TypeIs {
     }
 
 
+    /**
+     * @return resource
+     * @suppress PhanTypeMismatchDeclaredReturnNullable
+     */
     public static function resource( mixed $i_value, ?string $i_nstContext = null ) : mixed {
         if ( is_resource( $i_value ) ) {
             return $i_value;
@@ -80,19 +102,17 @@ final class TypeIs {
 
 
     /**
+     * @param array<int|string, mixed>|mixed $i_value
      * @return list<string>|string
      *
      * We're not going to try to cover every possible case here, but "string or list<string>"
      * covers a lot of common scenarios like HTTP and MIME headers.
      */
     public static function stringOrListString( mixed $i_value, ?string $i_nstContext = null ) : array|string {
-        if ( is_string( $i_value ) ) {
-            return $i_value;
-        }
         if ( is_array( $i_value ) ) {
-            return Cast::listString( $i_value );
+            return self::listString( $i_value, $i_nstContext );
         }
-        throw new TypeException( 'string or list<string>', $i_value, $i_nstContext );
+        return self::string( $i_value, $i_nstContext );
     }
 
 
