@@ -29,8 +29,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-	- name: PHP info
-	  run: php -i
+    - name: PHP info
+      run: php -i
 
     - name: Install ast
       run: sudo pecl install ast
