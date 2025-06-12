@@ -29,11 +29,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-	- name: PHP info
-	  run: php -i
+    - name: PHP info
+      run: php -i
 
     - name: Install ast
       run: sudo pecl install ast
+
+    - name: Activate ast
+      run: echo "extension=ast.so" | sudo tee /etc/php/8.3/cli/conf.d/99-ast.ini
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
