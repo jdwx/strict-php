@@ -187,6 +187,14 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testRealPath() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsString( OK::realpath( __FILE__ ) );
+        self::expectException( TypeException::class );
+        OK::realpath( '/no/such/file' );
+    }
+
+
     public function testStrToTime() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsInt( OK::strtotime( 'now' ) );

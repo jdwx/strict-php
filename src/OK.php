@@ -189,6 +189,11 @@ final class OK {
     }
 
 
+    public static function realpath( string $path ) : string {
+        return TypeIs::string( realpath( $path ), 'realpath return value' );
+    }
+
+
     /** @suppress PhanTypeMismatchArgumentNullableInternal */
     public static function strtotime( string $datetime, ?int $baseTimestamp = null ) : int {
         return TypeIs::int( strtotime( $datetime, $baseTimestamp ), 'strtotime return value' );
