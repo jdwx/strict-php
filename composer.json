@@ -17,7 +17,7 @@
   },
   "scripts": {
     "phan": "PHAN_DISABLE_XDEBUG_WARN=1 php vendor/bin/phan -S --analyze-twice",
-    "phpstan": "php -d xdebug.so phpstan",
+    "phpstan": "php -d xdebug.so vendor/bin/phpstan",
     "test": "vendor/bin/phpunit tests"
   }
 }
