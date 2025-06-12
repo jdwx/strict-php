@@ -29,18 +29,15 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
+	- name: PHP info
+	  run: php -i
+
     - name: Install ast
       run: sudo pecl install ast
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Install phpstan
-      run: composer require phpstan/phpstan
-
-    - name: Install phan
-      run: composer require phan/phan
-    
     - name: Run test suite
       run: composer run-script test
 
