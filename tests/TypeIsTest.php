@@ -11,6 +11,7 @@ use JDWX\Strict\Exceptions\TypeException;
 use JDWX\Strict\TypeIs;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Stringable;
 
 
 #[CoversClass( TypeIs::class )]
@@ -38,6 +39,23 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testArrayNullableStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame(
+            [ 'foo' => 'bar', 'baz' => $stringable ],
+            TypeIs::arrayNullableStringy( [ 'foo' => 'bar', 'baz' => $stringable ] )
+        );
+        self::expectException( TypeException::class );
+        TypeIs::arrayNullableStringy( [ 'foo' => 123, 'baz' => $stringable ] );
+    }
+
+
+    public function testArrayNullableStringyForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::arrayNullableStringy( 'not an array' );
+    }
+
+
     public function testArrayString() : void {
         self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayString( [ 'foo', 'bar' ] ) );
         self::expectException( TypeException::class );
@@ -48,6 +66,20 @@ final class TypeIsTest extends TestCase {
     public function testArrayStringForNotArray() : void {
         self::expectException( TypeException::class );
         TypeIs::arrayString( 'not an array' );
+    }
+
+
+    public function testArrayStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame( [ 'foo', $stringable ], TypeIs::arrayStringy( [ 'foo', $stringable ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::arrayStringy( [ 'foo', 123 ] );
+    }
+
+
+    public function testArrayStringyForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::arrayStringy( 'not an array' );
     }
 
 
@@ -125,6 +157,60 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testMapNullableString() : void {
+        self::assertSame( [ 'foo' => 'bar', 'baz' => null ], TypeIs::mapNullableString( [ 'foo' => 'bar', 'baz' => null ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::mapNullableString( [ 'foo' => 123, 'baz' => null ] );
+    }
+
+
+    public function testMapNullableStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::mapNullableString( 'not an array' );
+    }
+
+
+    public function testMapNullableStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame(
+            [ 'foo' => 'bar', 'baz' => $stringable ],
+            TypeIs::mapNullableStringy( [ 'foo' => 'bar', 'baz' => $stringable ] )
+        );
+        self::expectException( TypeException::class );
+        TypeIs::mapNullableStringy( [ 'foo' => 123, 'baz' => $stringable ] );
+    }
+
+
+    public function testMapString() : void {
+        self::assertSame( [ 'foo' => 'bar', 'baz' => 'qux' ], TypeIs::mapString( [ 'foo' => 'bar', 'baz' => 'qux' ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::mapString( [ 'foo' => 123, 'baz' => 'qux' ] );
+    }
+
+
+    public function testMapStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::mapString( 'not an array' );
+    }
+
+
+    public function testMapStringy() : void {
+        $stringable = self::stringable();
+        self::assertSame(
+            [ 'foo' => 'bar', 'baz' => $stringable ],
+            TypeIs::mapStringy( [ 'foo' => 'bar', 'baz' => $stringable ] )
+        );
+        self::expectException( TypeException::class );
+        TypeIs::mapStringy( [ 'foo' => 123, 'baz' => $stringable ] );
+    }
+
+
+    public function testMapStringyForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::mapStringy( 'not an array' );
+    }
+
+
     public function testObject() : void {
         self::assertInstanceOf( $this::class, TypeIs::object( $this ) );
         self::expectException( TypeException::class );
@@ -164,15 +250,7 @@ final class TypeIsTest extends TestCase {
 
 
     public function testStringy() : void {
-        $stringable = new class implements \Stringable {
-
-
-            public function __toString() : string {
-                return 'stringable';
-            }
-
-
-        };
+        $stringable = self::stringable();
         self::assertSame( $stringable, TypeIs::stringy( $stringable ) );
         self::assertSame( 'foo', TypeIs::stringy( 'foo' ) );
         self::expectException( TypeException::class );
@@ -181,15 +259,7 @@ final class TypeIsTest extends TestCase {
 
 
     public function testStringyOrNull() : void {
-        $stringable = new class implements \Stringable {
-
-
-            public function __toString() : string {
-                return 'stringable';
-            }
-
-
-        };
+        $stringable = self::stringable();
         self::assertSame( 'foo', TypeIs::stringyOrNull( 'foo' ) );
         self::assertSame( $stringable, TypeIs::stringyOrNull( $stringable ) );
         self::assertNull( TypeIs::stringyOrNull( null ) );
@@ -203,6 +273,19 @@ final class TypeIsTest extends TestCase {
         self::assertTrue( TypeIs::true( true ) );
         self::expectException( TypeException::class );
         TypeIs::true( 'not a bool' );
+    }
+
+
+    private function stringable() : Stringable {
+        return new class implements Stringable {
+
+
+            public function __toString() : string {
+                return 'stringable';
+            }
+
+
+        };
     }
 
 

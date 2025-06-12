@@ -38,6 +38,21 @@ final class TypeIs {
     }
 
 
+    /** @return array<int|string, string|Stringable|null> */
+    public static function arrayNullableStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            array_walk( $i_value, function ( $val ) use ( $i_nstContext ) : void {
+                if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) && ! is_null( $val ) ) {
+                    throw new TypeException( 'string|Stringable|null value', $val, $i_nstContext );
+                }
+            } );
+            /** @phpstan-var array<string|Stringable|null> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'array<?string|Stringable>', $i_value, $i_nstContext );
+    }
+
+
     /** @return array<int|string, string> */
     public static function arrayString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
@@ -50,6 +65,21 @@ final class TypeIs {
             return $i_value;
         }
         throw new TypeException( 'array<string>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return array<int|string, string|Stringable> */
+    public static function arrayStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            array_walk( $i_value, function ( $val ) use ( $i_nstContext ) : void {
+                if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) ) {
+                    throw new TypeException( 'string|Stringable value', $val, $i_nstContext );
+                }
+            } );
+            /** @phpstan-var array<string|Stringable> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'array<string|Stringable>', $i_value, $i_nstContext );
     }
 
 
@@ -118,6 +148,34 @@ final class TypeIs {
             return $i_value;
         }
         throw new TypeException( 'list<string>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return array<string, ?string> */
+    public static function mapNullableString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        /** @phpstan-ignore return.type */
+        return self::arrayNullableString( $i_value, $i_nstContext );
+    }
+
+
+    /** @return array<string, string|Stringable|null> */
+    public static function mapNullableStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
+        /** @phpstan-ignore return.type */
+        return self::arrayNullableStringy( $i_value, $i_nstContext );
+    }
+
+
+    /** @return array<string, string> */
+    public static function mapString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        /** @phpstan-ignore return.type */
+        return self::arrayString( $i_value, $i_nstContext );
+    }
+
+
+    /** @return array<string, string|Stringable> */
+    public static function mapStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
+        /** @phpstan-ignore return.type */
+        return self::arrayStringy( $i_value, $i_nstContext );
     }
 
 
