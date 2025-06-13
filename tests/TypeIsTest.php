@@ -132,79 +132,84 @@ final class TypeIsTest extends TestCase {
 
 
     public function testIterable() : void {
-        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
-        self::assertIsIterable( TypeIs::iterable( [ 'foo' ] ) );
+        $it = $this->generator( [ 'foo', 'bar' ] );
+        self::assertSame( [ 'foo', 'bar' ], iterator_to_array( TypeIs::iterable( $it ) ) );
         self::expectException( TypeException::class );
         TypeIs::iterable( 'not iterable' );
     }
 
 
     public function testIterableNullableString() : void {
-        self::assertSame( [ 'foo', null ], TypeIs::iterableNullableString( [ 'foo', null ] ) );
+        $it = $this->generator( [ 'foo', null ] );
+        self::assertSame( [ 'foo', null ], iterator_to_array( TypeIs::iterableNullableString( $it ) ) );
         self::expectException( TypeException::class );
-        TypeIs::iterableNullableString( [ 'foo', 123 ] );
+        iterator_to_array( TypeIs::iterableNullableString( [ 'foo', 123 ] ) );
     }
 
 
     public function testIterableNullableStringForNotIterable() : void {
         self::expectException( TypeException::class );
-        TypeIs::iterableNullableString( 123 );
+        iterator_to_array( TypeIs::iterableNullableString( 123 ) );
     }
 
 
     public function testIterableNullableStringy() : void {
         $stringable = self::stringable();
-        self::assertSame( [ 'foo', $stringable ], TypeIs::iterableNullableStringy( [ 'foo', $stringable ] ) );
+        $it = $this->generator( [ 'foo', $stringable ] );
+        self::assertSame( [ 'foo', $stringable ], iterator_to_array( TypeIs::iterableNullableStringy( $it ) ) );
         self::expectException( TypeException::class );
-        TypeIs::iterableNullableStringy( [ 'foo', 123 ] );
+        iterator_to_array( TypeIs::iterableNullableStringy( [ 'foo', 123 ] ) );
     }
 
 
     public function testIterableNullableStringyForNotIterable() : void {
         self::expectException( TypeException::class );
-        TypeIs::iterableNullableStringy( 123 );
+        iterator_to_array( TypeIs::iterableNullableStringy( 123 ) );
     }
 
 
     public function testIterableString() : void {
-        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
-        self::assertIsIterable( TypeIs::iterableString( [ 'foo', 'bar' ] ) );
+        $it = $this->generator( [ 'foo', 'bar' ] );
+        self::assertSame( [ 'foo', 'bar' ], iterator_to_array( TypeIs::iterableString( $it ) ) );
         self::expectException( TypeException::class );
-        TypeIs::iterableString( [ 'baz', 123 ] );
+        iterator_to_array( TypeIs::iterableString( [ 'baz', 123 ] ) );
     }
 
 
     public function testIterableStringForNotIterable() : void {
         self::expectException( TypeException::class );
-        TypeIs::iterableString( 123 );
+        iterator_to_array( TypeIs::iterableString( 123 ) );
     }
 
 
     public function testIterableStringOrListString() : void {
-        self::assertSame( [ 'foo', 'bar' ], TypeIs::iterableStringOrListString( [ 'foo', 'bar' ] ) );
-        self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], TypeIs::iterableStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
+        $it = $this->generator( [ 'foo', 'bar' ] );
+        self::assertSame( [ 'foo', 'bar' ], iterator_to_array( TypeIs::iterableStringOrListString( $it ) ) );
+        $it = $this->generator( [ 'foo', [ 'bar', 'baz' ] ] );
+        self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], iterator_to_array( TypeIs::iterableStringOrListString( $it ) ) );
         self::expectException( TypeException::class );
-        TypeIs::iterableStringOrListString( 123 );
+        iterator_to_array( TypeIs::iterableStringOrListString( 123 ) );
     }
 
 
     public function testIterableStringOrListStringForNotIterable() : void {
         self::expectException( TypeException::class );
-        TypeIs::iterableStringOrListString( 'not iterable' );
+        iterator_to_array( TypeIs::iterableStringOrListString( 'not iterable' ) );
     }
 
 
     public function testIterableStringy() : void {
         $stringable = self::stringable();
-        self::assertSame( [ 'foo', $stringable ], TypeIs::iterableStringy( [ 'foo', $stringable ] ) );
+        $it = $this->generator( [ 'foo', $stringable ] );
+        self::assertSame( [ 'foo', $stringable ], iterator_to_array( TypeIs::iterableStringy( $it ) ) );
         self::expectException( TypeException::class );
-        TypeIs::iterableStringy( [ 'foo', 123 ] );
+        iterator_to_array( TypeIs::iterableStringy( [ 'foo', 123 ] ) );
     }
 
 
     public function testIterableStringyForNotIterable() : void {
         self::expectException( TypeException::class );
-        TypeIs::iterableStringy( 123 );
+        iterator_to_array( TypeIs::iterableStringy( 123 ) );
     }
 
 
@@ -231,7 +236,10 @@ final class TypeIsTest extends TestCase {
 
     public function testListNullableStringy() : void {
         $stringable = self::stringable();
-        self::assertSame( [ 'foo', $stringable ], TypeIs::listNullableStringy( [ 'foo', $stringable ] ) );
+        self::assertSame(
+            [ 'foo', $stringable ],
+            iterator_to_array( TypeIs::listNullableStringy( [ 'foo', $stringable ] ) )
+        );
         self::expectException( TypeException::class );
         self::assertSame( [ 'foo', $stringable ], TypeIs::listNullableStringy( [ 'foo', 123 ] ) );
     }
@@ -440,6 +448,17 @@ final class TypeIsTest extends TestCase {
         self::assertTrue( TypeIs::true( true ) );
         self::expectException( TypeException::class );
         TypeIs::true( 'not a bool' );
+    }
+
+
+    /**
+     * @param list<mixed> $i_rValues
+     * @return iterable<mixed>
+     */
+    private function generator( array $i_rValues ) : iterable {
+        foreach ( $i_rValues as $value ) {
+            yield $value;
+        }
     }
 
 
