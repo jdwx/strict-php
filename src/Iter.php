@@ -14,6 +14,62 @@ final class Iter {
 
 
     /**
+     * @param iterable<int|string, string> $i_it
+     * @return iterable<int|string, string>
+     */
+    public static function arrayString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            yield $k => TypeIs::string( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<int|string, array<int|string, string>|string>
+     */
+    public static function arrayStringOrArrayString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            if ( is_array( $v ) ) {
+                yield $k => iterator_to_array( self::arrayString( $v ) );
+            } else {
+                yield $k => TypeIs::string( $v );
+            }
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<int|string, list<string>|string>
+     */
+    public static function arrayStringOrListString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            if ( is_array( $v ) ) {
+                yield $k => iterator_to_array( self::listString( $v ), false );
+            } else {
+                yield $k => TypeIs::string( $v );
+            }
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<int|string, array<string, string>|string>
+     */
+    public static function arrayStringOrMapString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            if ( is_array( $v ) ) {
+                yield $k => iterator_to_array( self::mapString( $v ) );
+            } else {
+                yield $k => TypeIs::string( $v );
+            }
+        }
+    }
+
+
+    /**
      * @param iterable<mixed> $i_it
      * @return iterable<int, mixed>
      */
@@ -80,6 +136,47 @@ final class Iter {
 
 
     /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<int, array<int|string, string>|string>
+     */
+    public static function listStringOrArrayString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $v ) {
+            if ( is_array( $v ) ) {
+                yield iterator_to_array( self::arrayString( $v ) );
+            } else {
+                yield TypeIs::string( $v );
+            }
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<int, list<string>|string>
+     */
+    public static function listStringOrListString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $v ) {
+            if ( is_array( $v ) ) {
+                yield iterator_to_array( self::listString( $v ), false );
+            } else {
+                yield TypeIs::string( $v );
+            }
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<string, array<string, string>|string>
+     * @suppress PhanTypeMismatchReturn
+     */
+    public static function listStringOrMapString( iterable $i_it ) : iterable {
+        /** @phpstan-ignore return.type */
+        return self::listStringOrArrayString( $i_it );
+    }
+
+
+    /**
      * @param iterable<string|null> $i_it
      * @return iterable<int, string|null>
      * @deprecated Use listNullableString() instead.
@@ -93,15 +190,11 @@ final class Iter {
     /**
      * @param iterable<int|string, array<int|string, string>|string> $i_it
      * @return iterable<int, list<string>|string>
+     * @deprecated Use listStringOrListString() instead.
+     * @codeCoverageIgnore
      */
     public static function listStringOrStringList( iterable $i_it ) : iterable {
-        foreach ( $i_it as $v ) {
-            if ( is_array( $v ) ) {
-                yield iterator_to_array( self::listString( $v ), false );
-            } else {
-                yield TypeIs::string( $v );
-            }
-        }
+        yield from self::listStringOrListString( $i_it );
     }
 
 
@@ -194,12 +287,43 @@ final class Iter {
 
 
     /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<string, array<int|string, string>|string>
+     */
+    public static function mapStringOrArrayString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            if ( is_array( $v ) ) {
+                yield strval( $k ) => iterator_to_array( self::arrayString( $v ) );
+            } else {
+                yield strval( $k ) => TypeIs::string( $v );
+            }
+        }
+    }
+
+
+    /**
      * @param iterable<int|string, list<string>|string> $i_it
      * @return iterable<string, list<string>|string>
      */
     public static function mapStringOrListString( iterable $i_it ) : iterable {
         foreach ( $i_it as $k => $v ) {
             yield strval( $k ) => TypeIs::stringOrListString( $v );
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_it
+     * @return iterable<string, array<string, string>|string>
+     */
+    public static function mapStringOrMapString( iterable $i_it ) : iterable {
+        foreach ( $i_it as $k => $v ) {
+            if ( is_array( $v ) ) {
+                /** @phpstan-ignore generator.valueType */
+                yield strval( $k ) => iterator_to_array( self::arrayString( $v ) );
+            } else {
+                yield strval( $k ) => TypeIs::string( $v );
+            }
         }
     }
 
