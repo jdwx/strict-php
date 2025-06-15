@@ -14,6 +14,42 @@ final class Cast {
 
 
     /**
+     * @param iterable<int|string, string> $i_value
+     * @return array<int|string, string>
+     */
+    public static function arrayString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::arrayString( $i_value ) );
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_value
+     * @return array<int|string, array<int|string, string>|string>
+     */
+    public static function arrayStringOrArrayString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::arrayStringOrArrayString( $i_value ) );
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_value
+     * @return array<int|string, list<string>|string>
+     */
+    public static function arrayStringOrListString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::arrayStringOrListString( $i_value ) );
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_value
+     * @return array<int|string, array<string, string>|string>
+     */
+    public static function arrayStringOrMapString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::arrayStringOrMapString( $i_value ) );
+    }
+
+
+    /**
      * @param iterable<int|string, mixed> $i_value
      * @return list<mixed>
      */
@@ -69,10 +105,28 @@ final class Cast {
 
     /**
      * @param iterable<int|string, array<int|string, string>|string> $i_value
+     * @return list<array<int|string, string>|string>
+     */
+    public static function listStringOrArrayString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::listStringOrArrayString( $i_value ), false );
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_value
      * @return list<list<string>|string>
      */
     public static function listStringOrListString( iterable $i_value ) : array {
-        return iterator_to_array( Iter::listStringOrStringList( $i_value ), false );
+        return iterator_to_array( Iter::listStringOrListString( $i_value ), false );
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_value
+     * @return list<array<string, string>|string>
+     */
+    public static function listStringOrMapString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::listStringOrMapString( $i_value ), false );
     }
 
 
@@ -162,11 +216,29 @@ final class Cast {
 
 
     /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_value
+     * @return array<int|string, array<int|string, string>|string>
+     */
+    public static function mapStringOrArrayString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::mapStringOrArrayString( $i_value ) );
+    }
+
+
+    /**
      * @param iterable<int|string, string|list<string>> $i_value
      * @return array<string, string|list<string>>
      */
     public static function mapStringOrListString( iterable $i_value ) : array {
         return iterator_to_array( Iter::mapStringOrListString( $i_value ) );
+    }
+
+
+    /**
+     * @param iterable<int|string, array<int|string, string>|string> $i_value
+     * @return array<string, array<string, string>|string>
+     */
+    public static function mapStringOrMapString( iterable $i_value ) : array {
+        return iterator_to_array( Iter::mapStringOrMapString( $i_value ) );
     }
 
 

@@ -17,6 +17,49 @@ use PHPUnit\Framework\TestCase;
 final class CastTest extends TestCase {
 
 
+    /** @suppress PhanTypeMismatchArgument */
+    public function testArrayString() : void {
+        self::assertSame( [ 'foo', 'bar' ], Cast::arrayString( [ 'foo', 'bar' ] ) );
+        self::assertSame( [ 'foo', 'baz' => 'bar' ], Cast::arrayString( [ 'foo', 'baz' => 'bar' ] ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::arrayString( [ 1, 2, 3 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testArrayStringOrArrayString() : void {
+        $r = [ 'foo', [ 'bar', 'baz' => 'qux' ] ];
+        self::assertSame( $r, Cast::arrayStringOrArrayString( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::arrayStringOrArrayString( [ 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testArrayStringOrListString() : void {
+        self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], Cast::arrayStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
+        self::assertSame(
+            [ 'foo', 'bar' => [ 'baz', 'quux' ] ],
+            Cast::arrayStringOrListString( [ 'foo', 'bar' => [ 'baz', 'qux' => 'quux' ] ] )
+        );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::arrayStringOrListString( [ 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testArrayStringOrMapString() : void {
+        $r = [ 'foo', [ 'bar' => 'baz', 'qux' ] ];
+        self::assertSame( $r, Cast::arrayStringOrMapString( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::arrayStringOrMapString( [ 1 ] );
+    }
+
+
     public function testList() : void {
         self::assertSame( [ 1, 2.34, 'three' ], Cast::list( [ 1, 2.34, 'three' ] ) );
         self::assertSame( [ 1, 2.34, 'three' ], Cast::list( [ 1, 'foo' => 2.34, 'three' ] ) );
@@ -83,6 +126,16 @@ final class CastTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
+    public function testListStringOrArrayString() : void {
+        $r = [ 'foo', [ 'bar', 'baz' => 'qux' ] ];
+        self::assertSame( $r, Cast::listStringOrArrayString( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::listStringOrArrayString( [ 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
     public function testListStringOrListString() : void {
         self::assertSame( [ 'a', [ 'b', 'c' ] ], Cast::listStringOrListString( [ 'a', [ 'b', 'c' ] ] ) );
         self::assertSame( [ 'a', [ 'b', 'c' ] ], Cast::listStringOrListString(
@@ -91,6 +144,16 @@ final class CastTest extends TestCase {
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         Cast::listStringOrListString( [ 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testListStringOrMapString() : void {
+        $r = [ 'foo', [ 'bar' => 'baz', 'qux' ] ];
+        self::assertSame( $r, Cast::listStringOrMapString( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::listStringOrMapString( [ 1 ] );
     }
 
 
@@ -179,12 +242,32 @@ final class CastTest extends TestCase {
 
 
     /** @suppress PhanTypeMismatchArgument */
+    public function testMapStringOrArrayString() : void {
+        $r = [ 'foo' => 'bar', 'bar' => [ 'baz', 'qux' => 'quux' ] ];
+        self::assertSame( $r, Cast::mapStringOrArrayString( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::mapStringOrArrayString( [ 'foo' => 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
     public function testMapStringOrListString() : void {
         $r = [ 'foo' => 'foo', 'bar' => [ 'bar1', 'bar2' ] ];
         self::assertSame( $r, Cast::mapStringOrListString( $r ) );
         self::expectException( TypeException::class );
         /** @phpstan-ignore argument.type */
         Cast::mapStringOrListString( [ 'foo' => 1 ] );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument */
+    public function testMapStringOrMapString() : void {
+        $r = [ 'foo' => 'bar', 'bar' => [ 'baz' => 'qux', 'quux' => 'corge' ] ];
+        self::assertSame( $r, Cast::mapStringOrMapString( $r ) );
+        self::expectException( TypeException::class );
+        /** @phpstan-ignore argument.type */
+        Cast::mapStringOrMapString( [ 'foo' => 1 ] );
     }
 
 
