@@ -68,6 +68,19 @@ final class TypeIs {
     }
 
 
+    /** @return array<int|string, array<int|string, string>|string> */
+    public static function arrayStringOrArrayString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        if ( is_array( $i_value ) ) {
+            foreach ( $i_value as $val ) {
+                self::stringOrArrayString( $val, $i_nstContext );
+            }
+            /** @phpstan-var array<int|string, string|array<string>> $i_value */
+            return $i_value;
+        }
+        throw new TypeException( 'array<string|array<string>>', $i_value, $i_nstContext );
+    }
+
+
     /** @return array<int|string, string|list<string>> */
     public static function arrayStringOrListString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
@@ -179,6 +192,18 @@ final class TypeIs {
     }
 
 
+    /** @return iterable<int|string, array<int|string, string>|string> */
+    public static function iterableStringOrArrayString( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            foreach ( $i_value as $key => $val ) {
+                yield $key => self::stringOrArrayString( $val, $i_nstContext );
+            }
+            return;
+        }
+        throw new TypeException( 'iterable<string|array<string>>', $i_value, $i_nstContext );
+    }
+
+
     /** @return iterable<int|string, string|list<string>> */
     public static function iterableStringOrListString( mixed $i_value, ?string $i_nstContext = null ) : iterable {
         if ( is_iterable( $i_value ) ) {
@@ -188,6 +213,18 @@ final class TypeIs {
             return;
         }
         throw new TypeException( 'iterable<string|list<string>>', $i_value, $i_nstContext );
+    }
+
+
+    /** @return iterable<int|string, array<string, string>|string> */
+    public static function iterableStringOrMapString( mixed $i_value, ?string $i_nstContext = null ) : iterable {
+        if ( is_iterable( $i_value ) ) {
+            foreach ( $i_value as $key => $val ) {
+                yield $key => self::stringOrMapString( $val, $i_nstContext );
+            }
+            return;
+        }
+        throw new TypeException( 'iterable<string|array<string>>', $i_value, $i_nstContext );
     }
 
 
@@ -313,6 +350,13 @@ final class TypeIs {
     }
 
 
+    /** @return array<string, array<int|string, string>|string> */
+    public static function mapStringOrArrayString( mixed $i_value, ?string $i_nstContext = null ) : array {
+        /** @phpstan-ignore return.type */
+        return self::arrayStringOrArrayString( $i_value, $i_nstContext );
+    }
+
+
     /** @return array<string, list<string>|string> */
     public static function mapStringOrListString( mixed $i_value, ?string $i_nstContext = null ) : array {
         /** @phpstan-ignore return.type */
@@ -355,6 +399,15 @@ final class TypeIs {
     }
 
 
+    /** @return array<int|string, string>|string */
+    public static function stringOrArrayString( mixed $i_value, ?string $i_nstContext = null ) : array|string {
+        if ( is_array( $i_value ) ) {
+            return self::arrayString( $i_value, $i_nstContext );
+        }
+        return self::string( $i_value, $i_nstContext );
+    }
+
+
     /**
      * @param array<int|string, mixed>|mixed $i_value
      * @return list<string>|string
@@ -370,6 +423,23 @@ final class TypeIs {
     }
 
 
+    /**
+     * @param array<int|string, mixed>|mixed $i_value
+     * @return array<string, string>|string
+     */
+    public static function stringOrMapString( mixed $i_value, ?string $i_nstContext = null ) : array|string {
+        if ( is_array( $i_value ) ) {
+            return self::mapString( $i_value, $i_nstContext );
+        }
+        return self::string( $i_value, $i_nstContext );
+    }
+
+
+    /**
+     * @param mixed $i_value
+     * @param string|null $i_nstContext
+     * @return string|null
+     */
     public static function stringOrNull( mixed $i_value, ?string $i_nstContext = null ) : ?string {
         if ( is_string( $i_value ) || is_null( $i_value ) ) {
             return $i_value;

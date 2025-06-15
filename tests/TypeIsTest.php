@@ -69,6 +69,29 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testArrayStringOrArrayString() : void {
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayStringOrArrayString( [ 'foo', 'bar' ] ) );
+
+        $r = [ 'foo' => 'bar', 'baz' => 'qux' ];
+        self::assertSame( $r, TypeIs::arrayStringOrArrayString( $r ) );
+
+        $r = [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ];
+        self::assertSame( $r, TypeIs::arrayStringOrArrayString( $r ) );
+
+        $r = [ 'foo', 'bar', 'baz' => [ 'qux', 'quux' => 'corge' ] ];
+        self::assertSame( $r, TypeIs::arrayStringOrArrayString( $r ) );
+
+        self::expectException( TypeException::class );
+        TypeIs::arrayStringOrArrayString( [ 'foo' => 33 ] );
+    }
+
+
+    public function testArrayStringOrArrayStringForNotArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::arrayStringOrArrayString( 'not an array' );
+    }
+
+
     public function testArrayStringOrListString() : void {
         self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayStringOrListString( [ 'foo', 'bar' ] ) );
         self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], TypeIs::arrayStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
@@ -182,6 +205,24 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testIterableStringOrArrayString() : void {
+        $r = [ 'foo' => 'bar', 'baz' => 'qux' ];
+        $it = $this->generator( $r );
+        self::assertSame( $r, iterator_to_array( TypeIs::iterableStringOrArrayString( $it ) ) );
+
+        $r = [ 'foo' => 'bar', 'baz' => [ 'qux' => 'quux' ] ];
+        $it = $this->generator( $r );
+        self::assertSame( $r, iterator_to_array( TypeIs::iterableStringOrArrayString( $it ) ) );
+
+        $r = [ 'foo', 'bar', 'baz' => [ 'qux', 'quux' => 'corge' ] ];
+        $it = $this->generator( $r );
+        self::assertSame( $r, iterator_to_array( TypeIs::iterableStringOrArrayString( $it ) ) );
+
+        self::expectException( TypeException::class );
+        iterator_to_array( TypeIs::iterableStringOrArrayString( 123 ) );
+    }
+
+
     public function testIterableStringOrListString() : void {
         $it = $this->generator( [ 'foo', 'bar' ] );
         self::assertSame( [ 'foo', 'bar' ], iterator_to_array( TypeIs::iterableStringOrListString( $it ) ) );
@@ -195,6 +236,20 @@ final class TypeIsTest extends TestCase {
     public function testIterableStringOrListStringForNotIterable() : void {
         self::expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableStringOrListString( 'not iterable' ) );
+    }
+
+
+    public function testIterableStringOrMapString() : void {
+        $r = [ 'foo' => 'bar', 'baz' => 'qux' ];
+        $it = $this->generator( $r );
+        self::assertSame( $r, iterator_to_array( TypeIs::iterableStringOrMapString( $it ) ) );
+
+        $r = [ 'foo' => 'bar', 'baz' => [ 'qux' => 'quux' ] ];
+        $it = $this->generator( $r );
+        self::assertSame( $r, iterator_to_array( TypeIs::iterableStringOrMapString( $it ) ) );
+
+        self::expectException( TypeException::class );
+        iterator_to_array( TypeIs::iterableStringOrMapString( 123 ) );
     }
 
 
@@ -356,6 +411,23 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testMapStringOrArrayString() : void {
+        $r = [ 'foo' => 'bar', 'baz' => 'qux' ];
+        self::assertSame( $r, TypeIs::mapStringOrArrayString( $r ) );
+
+        $r = [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ];
+        self::assertSame( $r, TypeIs::mapStringOrArrayString( $r ) );
+
+        # Map cannot require keys to be strings, just wish really hard,
+        # so this is (unfortunately) valid:
+        $r = [ 'foo', 'bar', 'baz' => [ 'qux', 'quux' => 'corge' ] ];
+        self::assertSame( $r, TypeIs::mapStringOrArrayString( $r ) );
+
+        self::expectException( TypeException::class );
+        TypeIs::mapStringOrArrayString( [ 'foo' => 123, 'baz' => 'qux' ] );
+    }
+
+
     public function testMapStringOrListString() : void {
         self::assertSame( [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ], TypeIs::mapStringOrListString( [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ] ) );
         self::expectException( TypeException::class );
@@ -408,11 +480,71 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testStringOrArrayString() : void {
+        self::assertSame( 'foo', TypeIs::stringOrArrayString( 'foo' ) );
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrArrayString( [ 'foo', 'bar' ] ) );
+        self::assertSame( [ 'foo', 'bar' => 'baz' ], TypeIs::stringOrArrayString( [ 'foo', 'bar' => 'baz' ] ) );
+        self::expectException( TypeException::class );
+        TypeIs::stringOrArrayString( 123 );
+    }
+
+
+    public function testStringOrArrayStringForBadArrayValue() : void {
+        self::expectException( TypeException::class );
+        TypeIs::stringOrArrayString( [ 'foo' => 123 ] );
+    }
+
+
+    public function testStringOrArrayStringForNestedArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::stringOrArrayString( [ 'foo' => [ 'bar' => 'baz' ] ] );
+    }
+
+
     public function testStringOrListString() : void {
         self::assertSame( 'foo', TypeIs::stringOrListString( 'foo' ) );
         self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrListString( [ 'foo', 'bar' ] ) );
         self::expectException( TypeException::class );
         TypeIs::stringOrListString( 123 );
+    }
+
+
+    public function testStringOrListStringForBadArrayValue() : void {
+        self::expectException( TypeException::class );
+        TypeIs::stringOrListString( [ 'foo', 123 ] );
+    }
+
+
+    public function testStringOrListStringForNestedArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::stringOrListString( [ 'foo' => [ 'bar', 'baz' ] ] );
+    }
+
+
+    public function testStringOrListStringForStringKey() : void {
+        self::expectException( TypeException::class );
+        TypeIs::stringOrListString( [ 'foo' => 'bar' ] );
+    }
+
+
+    public function testStringOrMapString() : void {
+        self::assertSame( 'foo', TypeIs::stringOrMapString( 'foo' ) );
+        $r = [ 'foo' => 'bar', 'baz' => 'qux' ];
+        self::assertSame( $r, TypeIs::stringOrMapString( $r ) );
+        self::expectException( TypeException::class );
+        TypeIs::stringOrMapString( 123 );
+    }
+
+
+    public function testStringOrMapStringForBadArrayValue() : void {
+        self::expectException( TypeException::class );
+        TypeIs::stringOrMapString( [ 'foo' => 123 ] );
+    }
+
+
+    public function testStringOrMapStringForNestedArray() : void {
+        self::expectException( TypeException::class );
+        TypeIs::stringOrMapString( [ 'foo' => [ 'bar' => 'baz' ] ] );
     }
 
 
@@ -452,12 +584,12 @@ final class TypeIsTest extends TestCase {
 
 
     /**
-     * @param list<mixed> $i_rValues
+     * @param array<mixed> $i_rValues
      * @return iterable<mixed>
      */
     private function generator( array $i_rValues ) : iterable {
-        foreach ( $i_rValues as $value ) {
-            yield $value;
+        foreach ( $i_rValues as $key => $value ) {
+            yield $key => $value;
         }
     }
 
