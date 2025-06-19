@@ -131,6 +131,18 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testMbConvertEncoding() : void {
+        self::assertSame( 'test', OK::mb_convert_encoding( 'test', 'UTF-8' ) );
+        # Another that I do not know how to provoke a failure for.
+    }
+
+
+    public function testMbConvertEncodingString() : void {
+        self::assertSame( 'test', OK::mb_convert_encoding_string( 'test', 'UTF-8' ) );
+        # Another that I do not know how to provoke a failure for.
+    }
+
+
     public function testOutputBuffering() : void {
         # Most of these fall into the "can't test failure" category, especially
         # since PHPUnit is already using output buffering.
@@ -174,6 +186,24 @@ final class OKTest extends TestCase {
         );
         self::expectException( UnexpectedFailureException::class );
         OK::preg_replace( '/test#', 'test', 'this is a test' );
+    }
+
+
+    public function testPregReplaceCallback() : void {
+        self::assertSame(
+            'this is a test',
+            OK::preg_replace_callback(
+                '/test/',
+                static function ( array $matches ) : string {
+                    return $matches[ 0 ];
+                },
+                'this is a test'
+            )
+        );
+        self::expectException( UnexpectedFailureException::class );
+        OK::preg_replace_callback( '/test#', static function ( array $matches ) : string {
+            return $matches[ 0 ];
+        }, 'this is a test' );
     }
 
 

@@ -122,6 +122,23 @@ final class OK {
     }
 
 
+    /**
+     * @param array<int|string, string>|string $string
+     * @return array<int|string, string>|string
+     * @suppress PhanPartialTypeMismatchArgumentInternal
+     */
+    public static function mb_convert_encoding( array|string $string, string $to_encoding,
+                                                ?string      $from_encoding = null ) : array|string {
+        return TypeIs::stringOrArrayString( mb_convert_encoding( $string, $to_encoding, $from_encoding ) );
+    }
+
+
+    public static function mb_convert_encoding_string( string  $string, string $to_encoding,
+                                                       ?string $from_encoding = null ) : string {
+        return TypeIs::string( mb_convert_encoding( $string, $to_encoding, $from_encoding ) );
+    }
+
+
     public static function ob_clean() : true {
         return TypeIs::true( ob_clean(), 'ob_clean return value' );
     }
@@ -201,6 +218,33 @@ final class OK {
             return $result;
         }
         throw new UnexpectedFailureException( 'preg_replace', preg_last_error_msg(),
+            0, null );
+    }
+
+
+    /**
+     * @param array<int|string, string>|string $pattern
+     * @param callable $callback
+     * @param array<int|string, string>|string $subject
+     * @param int $limit
+     * @param ?int $count
+     * @param-out int $count
+     * @param int $flags
+     * @return array<int|string, string>|string
+     */
+    public static function preg_replace_callback(
+        string|array $pattern,
+        callable     $callback,
+        string|array $subject,
+        int          $limit = -1,
+        ?int         &$count = null,
+        int          $flags = 0
+    ) : string|array {
+        $x = @preg_replace_callback( $pattern, $callback, $subject, $limit, $count, $flags );
+        if ( is_array( $x ) || is_string( $x ) ) {
+            return $x;
+        }
+        throw new UnexpectedFailureException( 'preg_replace_callback', preg_last_error_msg(),
             0, null );
     }
 
