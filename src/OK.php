@@ -251,6 +251,33 @@ final class OK {
 
     /**
      * @param string $pattern
+     * @param callable $callback
+     * @param string $subject
+     * @param int $limit
+     * @param ?int $count
+     * @param-out int $count
+     * @param int $flags
+     * @return string
+     */
+    public static function preg_replace_callback_string(
+        string   $pattern,
+        callable $callback,
+        string   $subject,
+        int      $limit = -1,
+        ?int     &$count = null,
+        int      $flags = 0
+    ) : string {
+        $x = @preg_replace_callback( $pattern, $callback, $subject, $limit, $count, $flags );
+        if ( is_string( $x ) ) {
+            return $x;
+        }
+        throw new UnexpectedFailureException( 'preg_replace_callback_string', preg_last_error_msg(),
+            0, null );
+    }
+
+
+    /**
+     * @param string $pattern
      * @param string $replacement
      * @param string $subject
      * @param int $limit

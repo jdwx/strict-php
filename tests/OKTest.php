@@ -207,6 +207,24 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testPregReplaceCallbackString() : void {
+        self::assertSame(
+            'this is a test',
+            OK::preg_replace_callback_string(
+                '/test/',
+                static function ( array $matches ) : string {
+                    return $matches[ 0 ];
+                },
+                'this is a test'
+            )
+        );
+        self::expectException( UnexpectedFailureException::class );
+        OK::preg_replace_callback_string( '/test#', static function ( array $matches ) : string {
+            return $matches[ 0 ];
+        }, 'this is a test' );
+    }
+
+
     public function testPregReplaceString() : void {
         self::assertSame(
             'this is a test',
