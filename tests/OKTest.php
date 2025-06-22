@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpComposerExtensionStubsInspection */
 
 
 declare( strict_types = 1 );
@@ -287,6 +287,116 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testSocketBind() : void {
+        $socket = OK::socket_create( AF_INET, SOCK_STREAM, 0 );
+        OK::socket_bind( $socket, '0.0.0.0' );
+        OK::socket_getsockname( $socket, $address, $port );
+        self::assertIsInt( $port );
+        self::assertGreaterThan( 0, $port );
+        socket_close( $socket );
+
+        $socket = OK::socket_create( AF_UNIX, SOCK_STREAM, 0 );
+        self::expectException( UnexpectedFailureException::class );
+        OK::socket_bind( $socket, '/no/such/path/socket.sock' );
+    }
+
+
+    public function testSocketCreate() : void {
+        $socket = OK::socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
+        self::assertInstanceOf( \Socket::class, $socket );
+        socket_close( $socket );
+
+        self::expectException( UnexpectedFailureException::class );
+        OK::socket_create( AF_UNIX, SOCK_STREAM, SOL_TCP );
+    }
+
+
+    public function testSocketCreatePair() : void {
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
+        /** @phpstan-ignore function.alreadyNarrowedType */
+        assert( is_array( $sockets ) );
+        self::assertCount( 2, $sockets );
+        socket_close( $sockets[ 0 ] );
+        socket_close( $sockets[ 1 ] );
+
+        self::expectException( UnexpectedFailureException::class );
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, SOL_TCP, $sockets );
+    }
+
+
+    public function testSocketRead() : void {
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
+        /** @phpstan-ignore function.alreadyNarrowedType */
+        assert( is_array( $sockets ) );
+        socket_write( $sockets[ 0 ], 'test data' );
+        self::assertSame( 'test data', OK::socket_read( $sockets[ 1 ], 1000 ) );
+        socket_close( $sockets[ 0 ] );
+        socket_close( $sockets[ 1 ] );
+    }
+
+
+    public function testSocketRecv() : void {
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
+        /** @phpstan-ignore function.alreadyNarrowedType */
+        assert( is_array( $sockets ) );
+        socket_write( $sockets[ 0 ], 'test data' );
+        self::assertSame( 9, OK::socket_recv( $sockets[ 1 ], $st, 1000, 0 ) );
+        socket_close( $sockets[ 0 ] );
+        socket_close( $sockets[ 1 ] );
+    }
+
+
+    public function testSocketRecvFrom() : void {
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
+        /** @phpstan-ignore function.alreadyNarrowedType */
+        assert( is_array( $sockets ) );
+        socket_write( $sockets[ 0 ], 'test data' );
+        self::assertSame( 9, OK::socket_recvfrom( $sockets[ 1 ], $st, 1000, 0, $from, $port ) );
+        self::assertSame( 'test data', $st );
+        self::assertSame( '', $from );
+        self::assertNull( $port );
+        socket_close( $sockets[ 0 ] );
+        socket_close( $sockets[ 1 ] );
+    }
+
+
+    public function testSocketSend() : void {
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
+        /** @phpstan-ignore function.alreadyNarrowedType */
+        assert( is_array( $sockets ) );
+        self::assertSame( 9, OK::socket_send( $sockets[ 0 ], 'test data', 1000, 0 ) );
+        $data = OK::socket_read( $sockets[ 1 ], 1000 );
+        self::assertSame( 'test data', $data );
+        socket_close( $sockets[ 0 ] );
+        socket_close( $sockets[ 1 ] );
+    }
+
+
+    public function testSocketSendTo() : void {
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
+        /** @phpstan-ignore function.alreadyNarrowedType */
+        assert( is_array( $sockets ) );
+        self::assertSame( 9, OK::socket_sendto( $sockets[ 0 ], 'test data', 1000, 0, '' ) );
+        $data = OK::socket_read( $sockets[ 1 ], 1000 );
+        self::assertSame( 'test data', $data );
+        socket_close( $sockets[ 0 ] );
+        socket_close( $sockets[ 1 ] );
+    }
+
+
+    public function testSocketWrite() : void {
+        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
+        /** @phpstan-ignore function.alreadyNarrowedType */
+        assert( is_array( $sockets ) );
+        self::assertSame( 9, OK::socket_write( $sockets[ 0 ], 'test data', 9 ) );
+        $data = OK::socket_read( $sockets[ 1 ], 1000 );
+        self::assertSame( 'test data', $data );
+        socket_close( $sockets[ 0 ] );
+        socket_close( $sockets[ 1 ] );
+    }
+
+
     public function testStrToTime() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsInt( OK::strtotime( 'now' ) );
@@ -321,7 +431,9 @@ final class OKTest extends TestCase {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsArray( OK::unpack( 'C*', $data ) );
         self::expectException( TypeException::class );
+        $old = set_error_handler( null );
         OK::unpack( 'NNN', 'AB' );
+        set_error_handler( $old );
     }
 
 

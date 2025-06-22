@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection PhpComposerExtensionStubsInspection */
+
+
 /**
  * @noinspection PhpClassNamingConventionInspection
  * @noinspection PhpMethodNamingConventionInspection
@@ -331,6 +333,147 @@ final class OK {
 
     public static function realpath( string $path ) : string {
         return TypeIs::string( realpath( $path ), 'realpath return value' );
+    }
+
+
+    public static function socket_bind( \Socket $socket, string $address, int $port = 0 ) : void {
+        $result = @socket_bind( $socket, $address, $port );
+        if ( true === $result ) {
+            return;
+        }
+        throw new UnexpectedFailureException( 'socket_bind', socket_strerror( socket_last_error() ),
+            0, null );
+    }
+
+
+    public static function socket_create( int $domain, int $type, int $protocol ) : \Socket {
+        $result = @socket_create( $domain, $type, $protocol );
+        if ( $result instanceof \Socket ) {
+            return $result;
+        }
+        throw new UnexpectedFailureException( 'socket_create', socket_strerror( socket_last_error() ),
+            0, null );
+    }
+
+
+    /**
+     * @param list<\Socket>|null $pair
+     * @param-out list<\Socket> $pair
+     */
+    public static function socket_create_pair( int $domain, int $type, int $protocol, ?array &$pair ) : void {
+        $result = @socket_create_pair( $domain, $type, $protocol, $pair );
+        if ( true === $result ) {
+            return;
+        }
+        throw new UnexpectedFailureException( 'socket_create_pair', socket_strerror( socket_last_error() ),
+            0, null );
+    }
+
+
+    public static function socket_getsockname( \Socket $socket, ?string &$address, ?int &$port = null ) : void {
+        $result = @socket_getsockname( $socket, $address, $port );
+        if ( true === $result ) {
+            return;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'socket_getsockname', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    public static function socket_read( \Socket $socket, int $length, int $type = PHP_BINARY_READ ) : string {
+        $result = @socket_read( $socket, $length, $type );
+        if ( is_string( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'socket_read', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    /**
+     * @param \Socket $socket
+     * @param ?string $data
+     * @param-out string $data
+     * @param int $len
+     * @param int $flags
+     * @return int
+     */
+    public static function socket_recv( \Socket $socket, ?string &$data, int $len, int $flags ) : int {
+        $result = @socket_recv( $socket, $data, $len, $flags );
+        if ( is_int( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'socket_recv', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    /**
+     * @param \Socket $socket
+     * @param ?string $data
+     * @param-out string $data
+     * @param int $len
+     * @param int $flags
+     * @param string|null $address
+     * @param-out string|null $address
+     * @param int|null $port
+     * @param-out int|null $port
+     * @return int
+     */
+    public static function socket_recvfrom( \Socket $socket, ?string &$data, int $len, int $flags,
+                                            ?string &$address, ?int &$port = null ) : int {
+        $result = @socket_recvfrom( $socket, $data, $len, $flags, $address, $port );
+        if ( is_int( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'socket_recvfrom', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    public static function socket_send( \Socket $socket, string $data, int $len, int $flags ) : int {
+        $result = @socket_send( $socket, $data, $len, $flags );
+        if ( is_int( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'socket_send', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    /** @suppress PhanTypeMismatchArgumentNullableInternal */
+    public static function socket_sendto( \Socket $socket, string $data, int $len, int $flags,
+                                          string  $address, ?int $port = null ) : int {
+        $result = @socket_sendto( $socket, $data, $len, $flags, $address, $port );
+        if ( is_int( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'socket_sendto', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    public static function socket_write( \Socket $socket, string $data, int $len ) : int {
+        $result = @socket_write( $socket, $data, $len );
+        if ( is_int( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'socket_write', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
     }
 
 
