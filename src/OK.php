@@ -184,6 +184,11 @@ final class OK {
     }
 
 
+    public static function pack( string $format, mixed ...$data ) : string {
+        return TypeIs::string( pack( $format, ...$data ) );
+    }
+
+
     /**
      * @param list<list<string|int>>|null &$matches
      * @param-out list<list<string|int>> $matches
@@ -337,6 +342,12 @@ final class OK {
 
     public static function tempnam( string $directory, string $prefix ) : string {
         return TypeIs::string( tempnam( $directory, $prefix ) );
+    }
+
+
+    /** @return array<int|string, mixed> */
+    public static function unpack( string $format, string $data ) : array {
+        return TypeIs::array( unpack( $format, $data ), 'unpack return value' );
     }
 
 

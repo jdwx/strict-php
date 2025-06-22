@@ -172,6 +172,15 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testPack() : void {
+        $data = OK::pack( 'C*', 1, 2, 3, 4 );
+        $r = unpack( 'C*', $data );
+        assert( is_array( $r ) );
+        self::assertSame( [ 1 => 1, 2 => 2, 3 => 3, 4 => 4 ], $r );
+        # I don't think pack() can fail without throwing an exception.
+    }
+
+
     public function testPregMatch() : void {
         self::assertSame( 1, OK::preg_match( '/test/', 'this is a test' ) );
         self::expectException( UnexpectedFailureException::class );
@@ -304,6 +313,15 @@ final class OKTest extends TestCase {
             OK::ini_set( 'sys_temp_dir', $oldTemp );
             throw $e;
         }
+    }
+
+
+    public function testUnpack() : void {
+        $data = OK::pack( 'C*', 1, 2, 3, 4 );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsArray( OK::unpack( 'C*', $data ) );
+        self::expectException( TypeException::class );
+        OK::unpack( 'NNN', 'AB' );
     }
 
 
