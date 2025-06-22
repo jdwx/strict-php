@@ -192,8 +192,8 @@ final class OK {
 
 
     /**
-     * @param list<list<string|int>>|null &$matches
-     * @param-out list<list<string|int>> $matches
+     * @param list<list<string|int>|string>|null &$matches
+     * @param-out list<list<string|int>|string> $matches
      */
     public static function preg_match( string $pattern, string $subject, ?array &$matches = null,
                                        int    $flags = 0, int $offset = 0 ) : int {
