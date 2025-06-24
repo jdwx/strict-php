@@ -102,6 +102,16 @@ final class OK {
     }
 
 
+    public static function inet_ntop( string $i_stIPAddress ) : string {
+        return TypeIs::string( inet_ntop( $i_stIPAddress ), 'inet_ntop return value' );
+    }
+
+
+    public static function inet_pton( string $i_stIPAddress ) : string {
+        return TypeIs::string( inet_pton( $i_stIPAddress ) );
+    }
+
+
     public static function ini_get( string $option ) : string {
         return TypeIs::string( ini_get( $option ), 'ini_get return value' );
     }

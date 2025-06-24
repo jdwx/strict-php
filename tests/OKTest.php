@@ -105,6 +105,28 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testInetNToP() : void {
+        self::assertSame( '1.2.3.4', OK::inet_ntop( "\x01\x02\x03\x04" ) );
+        self::assertSame(
+            '::1',
+            OK::inet_ntop( "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01" )
+        );
+        self::expectException( TypeException::class );
+        OK::inet_ntop( 'not an address' );
+    }
+
+
+    public function testInetPToN() : void {
+        self::assertSame( "\x01\x02\x03\x04", OK::inet_pton( '1.2.3.4' ) );
+        self::assertSame(
+            "\x00\x05\x00\x00\x00\x00\x00\x00\x00\x04\x00\x03\x00\x02\x00\x01",
+            OK::inet_pton( '5::4:3:2:1' )
+        );
+        self::expectException( TypeException::class );
+        OK::inet_pton( 'not an address' );
+    }
+
+
     public function testIniGet() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( OK::ini_get( 'display_errors' ) );
