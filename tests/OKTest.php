@@ -396,14 +396,17 @@ final class OKTest extends TestCase {
 
 
     public function testSocketSendTo() : void {
-        OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
-        /** @phpstan-ignore function.alreadyNarrowedType */
-        assert( is_array( $sockets ) );
-        self::assertSame( 9, OK::socket_sendto( $sockets[ 0 ], 'test data', 1000, 0, '' ) );
-        $data = OK::socket_read( $sockets[ 1 ], 1000 );
+        $socket1 = OK::socket_create( AF_INET, SOCK_DGRAM, 0 );
+        $socket2 = OK::socket_create( AF_INET, SOCK_DGRAM, 0 );
+        OK::socket_bind( $socket1, '127.0.0.1' );
+        OK::socket_getsockname( $socket1, $address, $port );
+        assert( is_string( $address ) );
+        assert( is_int( $port ) );
+        self::assertSame( 9, OK::socket_sendto( $socket2, 'test data', 1000, 0, $address, $port ) );
+        $data = OK::socket_read( $socket1, 1000 );
         self::assertSame( 'test data', $data );
-        socket_close( $sockets[ 0 ] );
-        socket_close( $sockets[ 1 ] );
+        socket_close( $socket1 );
+        socket_close( $socket2 );
     }
 
 
