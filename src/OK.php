@@ -392,8 +392,8 @@ final class OK {
     }
 
 
-    public static function socket_read( \Socket $socket, int $length, int $type = PHP_BINARY_READ ) : string {
-        $result = @socket_read( $socket, $length, $type );
+    public static function socket_read( \Socket $socket, int $length, int $mode = PHP_BINARY_READ ) : string {
+        $result = @socket_read( $socket, $length, $mode );
         if ( is_string( $result ) ) {
             return $result;
         }
