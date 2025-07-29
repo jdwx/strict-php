@@ -22,6 +22,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class OK {
 
 
+    public static function base64_decode( string $data, bool $strict = false ) : string {
+        return TypeIs::string( base64_decode( $data, $strict ), 'base64_decode return value' );
+    }
+
+
     /**
      * @param resource $handle
      * @suppress PhanTypeMismatchDeclaredParamNullable
@@ -482,6 +487,22 @@ final class OK {
         }
         // @codeCoverageIgnoreStart
         throw new UnexpectedFailureException( 'socket_write', socket_strerror( socket_last_error() ),
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
+    /**
+     * @param resource $stream
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
+    public static function stream_get_contents( $stream, ?int $length = null, int $offset = -1 ) : string {
+        $result = @stream_get_contents( $stream, $length, $offset );
+        if ( is_string( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'stream_get_contents', 'Failed to read stream contents',
             0, null );
         // @codeCoverageIgnoreEnd
     }
