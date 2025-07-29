@@ -18,6 +18,13 @@ use PHPUnit\Framework\TestCase;
 final class OKTest extends TestCase {
 
 
+    public function testBase64Decode() : void {
+        self::assertSame( 'test data', OK::base64_decode( 'dGVzdCBkYXRh' ) );
+        $this->expectException( TypeException::class );
+        OK::base64_decode( '**invalid base64**', true );
+    }
+
+
     public function testFClose() : void {
         $fh = OK::fopen( __FILE__, 'r' );
         self::assertTrue( OK::fclose( $fh ) );
@@ -34,7 +41,7 @@ final class OKTest extends TestCase {
         $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         $fh = OK::fopen( $tempFile, 'w' );
         unlink( $tempFile );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::fgets( $fh );
     }
 
@@ -43,7 +50,7 @@ final class OKTest extends TestCase {
         $fh = OK::fopen( __FILE__, 'r' );
         self::assertIsResource( $fh );
         fclose( $fh );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::fopen( '/no/such/file', 'r' );
     }
 
@@ -57,7 +64,7 @@ final class OKTest extends TestCase {
         $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         $fh = OK::fopen( $tempFile, 'w' );
         unlink( $tempFile );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::fread( $fh, 10 );
     }
 
@@ -74,7 +81,7 @@ final class OKTest extends TestCase {
         $fh = OK::fopen( $tempFile, 'r' );
         self::assertIsResource( $fh );
         unlink( $tempFile );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::fwrite( $fh, 'test data' );
     }
 
@@ -82,7 +89,7 @@ final class OKTest extends TestCase {
     public function testFileGetContents() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( OK::file_get_contents( __FILE__ ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::file_get_contents( '/no/such/file' );
     }
 
@@ -91,7 +98,7 @@ final class OKTest extends TestCase {
         $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         self::assertSame( 9, OK::file_put_contents( $tempFile, 'test data' ) );
         unlink( $tempFile );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::file_put_contents( '/no/such/file', 'data' );
     }
 
@@ -100,7 +107,7 @@ final class OKTest extends TestCase {
         # Since PHPUnit doesn't run under a web server, we cannot test
         # the successful case of http_response_code(). But it's happy
         # to fail for us!
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::http_response_code();
     }
 
@@ -111,7 +118,7 @@ final class OKTest extends TestCase {
             '::1',
             OK::inet_ntop( "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01" )
         );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::inet_ntop( 'not an address' );
     }
 
@@ -122,7 +129,7 @@ final class OKTest extends TestCase {
             "\x00\x05\x00\x00\x00\x00\x00\x00\x00\x04\x00\x03\x00\x02\x00\x01",
             OK::inet_pton( '5::4:3:2:1' )
         );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::inet_pton( 'not an address' );
     }
 
@@ -130,7 +137,7 @@ final class OKTest extends TestCase {
     public function testIniGet() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( OK::ini_get( 'display_errors' ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::ini_get( 'no_such_value' );
     }
 
@@ -141,14 +148,14 @@ final class OKTest extends TestCase {
         self::assertIsString( $oldValue );
         // Reset to the old value
         OK::ini_set( 'display_errors', $oldValue );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::ini_set( 'no_such_value', 'foo' );
     }
 
 
     public function testJsonDecode() : void {
         self::assertIsArray( OK::json_decode( '{"a":1,"b":2}', true ) );
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::json_decode( 'invalid json' );
     }
 
@@ -205,7 +212,7 @@ final class OKTest extends TestCase {
 
     public function testPregMatch() : void {
         self::assertSame( 1, OK::preg_match( '/test/', 'this is a test' ) );
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::preg_match( '/test#', 'this is a test', $matches );
     }
 
@@ -215,7 +222,7 @@ final class OKTest extends TestCase {
             'this is a test',
             OK::preg_replace( '/test/', 'test', 'this is a test' )
         );
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::preg_replace( '/test#', 'test', 'this is a test' );
     }
 
@@ -231,7 +238,7 @@ final class OKTest extends TestCase {
                 'this is a test'
             )
         );
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::preg_replace_callback( '/test#', static function ( array $matches ) : string {
             return $matches[ 0 ];
         }, 'this is a test' );
@@ -249,7 +256,7 @@ final class OKTest extends TestCase {
                 'this is a test'
             )
         );
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::preg_replace_callback_string( '/test#', static function ( array $matches ) : string {
             return $matches[ 0 ];
         }, 'this is a test' );
@@ -261,7 +268,7 @@ final class OKTest extends TestCase {
             'this is a test',
             OK::preg_replace_string( '/test/', 'test', 'this is a test' )
         );
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::preg_replace_string( '/test#', 'test', 'this is a test' );
     }
 
@@ -276,7 +283,7 @@ final class OKTest extends TestCase {
             $result
         );
 
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::preg_split( '/test#', 'this is a test' );
     }
 
@@ -284,7 +291,7 @@ final class OKTest extends TestCase {
     public function testPregSplitList() : void {
         $result = OK::preg_split_list( '/\s+/', 'this is a test' );
         self::assertSame( [ 'this', 'is', 'a', 'test' ], $result );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::preg_split_list( '/\s+/', 'this is a test', -1, PREG_SPLIT_OFFSET_CAPTURE );
     }
 
@@ -296,7 +303,7 @@ final class OKTest extends TestCase {
             $r
         );
 
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::preg_split_offset( '/\s+/', 'this is a test' );
     }
 
@@ -304,7 +311,7 @@ final class OKTest extends TestCase {
     public function testRealPath() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( OK::realpath( __FILE__ ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::realpath( '/no/such/file' );
     }
 
@@ -318,7 +325,7 @@ final class OKTest extends TestCase {
         socket_close( $socket );
 
         $socket = OK::socket_create( AF_UNIX, SOCK_STREAM, 0 );
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::socket_bind( $socket, '/no/such/path/socket.sock' );
     }
 
@@ -329,7 +336,7 @@ final class OKTest extends TestCase {
         self::assertInstanceOf( \Socket::class, $socket );
         socket_close( $socket );
 
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::socket_create( AF_UNIX, SOCK_STREAM, SOL_TCP );
     }
 
@@ -342,7 +349,7 @@ final class OKTest extends TestCase {
         socket_close( $sockets[ 0 ] );
         socket_close( $sockets[ 1 ] );
 
-        self::expectException( UnexpectedFailureException::class );
+        $this->expectException( UnexpectedFailureException::class );
         OK::socket_create_pair( AF_UNIX, SOCK_STREAM, SOL_TCP, $sockets );
     }
 
@@ -425,8 +432,16 @@ final class OKTest extends TestCase {
     public function testStrToTime() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsInt( OK::strtotime( 'now' ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         OK::strtotime( 'invalid date string' );
+    }
+
+
+    public function testStreamGetContents() : void {
+        $fh = OK::fopen( __FILE__, 'r' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertIsString( OK::stream_get_contents( $fh ) );
+        fclose( $fh );
     }
 
 
@@ -440,7 +455,7 @@ final class OKTest extends TestCase {
         # This is another that I do not know how to provoke an exception for.
         # If the target directory does not exist, tempnam() falls back to
         # the system's temporary directory.
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         $oldTemp = OK::ini_set( 'sys_temp_dir', '/no/such/path' );
         try {
             OK::tempnam( __DIR__, 'test' );
@@ -455,7 +470,7 @@ final class OKTest extends TestCase {
         $data = OK::pack( 'C*', 1, 2, 3, 4 );
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsArray( OK::unpack( 'C*', $data ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         $old = set_error_handler( null );
         OK::unpack( 'NNN', 'AB' );
         set_error_handler( $old );
