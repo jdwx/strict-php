@@ -172,6 +172,34 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testMkdir() : void {
+        $tempDir = OK::tempnam( sys_get_temp_dir(), 'test' );
+        unlink( $tempDir );
+        self::assertDirectoryDoesNotExist( $tempDir );
+        OK::mkdir( $tempDir );
+        self::assertDirectoryExists( $tempDir );
+        rmdir( $tempDir );
+
+        $this->expectException( UnexpectedFailureException::class );
+        OK::mkdir( '/no/such/path' );
+    }
+
+
+    public function testMkdirIfDoesNotExist() : void {
+        $tempDir = OK::tempnam( sys_get_temp_dir(), 'test' );
+        unlink( $tempDir );
+        self::assertDirectoryDoesNotExist( $tempDir );
+        OK::mkdirIfDoesNotExist( $tempDir );
+        self::assertDirectoryExists( $tempDir );
+
+        OK::mkdirIfDoesNotExist( $tempDir ); // Should not throw an exception
+        rmdir( $tempDir );
+
+        $this->expectException( UnexpectedFailureException::class );
+        OK::mkdirIfDoesNotExist( '/no/such/path' );
+    }
+
+
     public function testOutputBuffering() : void {
         # Most of these fall into the "can't test failure" category, especially
         # since PHPUnit is already using output buffering.

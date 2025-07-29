@@ -156,6 +156,28 @@ final class OK {
     }
 
 
+    /** @param resource $context */
+    public static function mkdir( string $directory, int $permissions = 0777, bool $recursive = false,
+                                         $context = null ) : void {
+        $result = @mkdir( $directory, $permissions, $recursive, $context );
+        if ( true === $result ) {
+            return;
+        }
+        throw new UnexpectedFailureException( 'mkdir', 'Failed to create directory: ' . $directory,
+            0, null );
+    }
+
+
+    /** param resource $context */
+    public static function mkdirIfDoesNotExist( string $directory, int $permissions = 0777,
+                                                bool   $recursive = false, $context = null ) : void {
+        if ( is_dir( $directory ) ) {
+            return;
+        }
+        self::mkdir( $directory, $permissions, $recursive, $context );
+    }
+
+
     public static function ob_clean() : true {
         return TypeIs::true( ob_clean(), 'ob_clean return value' );
     }
