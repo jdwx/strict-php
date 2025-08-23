@@ -25,6 +25,23 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testDirectoryFunctions() : void {
+        $x = OK::opendir( __DIR__ );
+        OK::rewinddir( $x );
+        $r = [];
+        while ( false !== ( $entry = OK::readdir( $x ) ) ) {
+            $r[] = $entry;
+        }
+        OK::closedir( $x );
+        self::assertContains( '.', $r );
+        self::assertContains( '..', $r );
+        self::assertContains( basename( __FILE__ ), $r );
+
+        $this->expectException( TypeException::class );
+        OK::opendir( '/no/such/dir' );
+    }
+
+
     public function testFClose() : void {
         $fh = OK::fopen( __FILE__, 'r' );
         self::assertTrue( OK::fclose( $fh ) );
@@ -344,6 +361,16 @@ final class OKTest extends TestCase {
     }
 
 
+    /** @noinspection SpellCheckingInspection */
+    public function testScandir() : void {
+        $r = OK::scandir( __DIR__ );
+        self::assertContains( basename( __FILE__ ), $r );
+
+        $this->expectException( TypeException::class );
+        OK::scandir( '/no/such/dir' );
+    }
+
+
     public function testSocketBind() : void {
         $socket = OK::socket_create( AF_INET, SOCK_STREAM, 0 );
         OK::socket_bind( $socket, '0.0.0.0' );
@@ -360,7 +387,10 @@ final class OKTest extends TestCase {
 
     public function testSocketCreate() : void {
         $socket = OK::socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
-        /** @noinspection PhpConditionAlreadyCheckedInspection */
+        /**
+         * @noinspection PhpConditionAlreadyCheckedInspection
+         * @noinspection UnnecessaryAssertionInspection
+         */
         self::assertInstanceOf( \Socket::class, $socket );
         socket_close( $socket );
 

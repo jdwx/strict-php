@@ -28,6 +28,15 @@ final class OK {
 
 
     /**
+     * @param resource|null $handle
+     * @suppress PhanPossiblyNullTypeArgumentInternal
+     */
+    public static function closedir( mixed $handle = null ) : void {
+        @closedir( $handle );
+    }
+
+
+    /**
      * @param resource $handle
      * @suppress PhanTypeMismatchDeclaredParamNullable
      */
@@ -156,7 +165,10 @@ final class OK {
     }
 
 
-    /** @param resource $context */
+    /**
+     * @param ?resource $context
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
     public static function mkdir( string $directory, int $permissions = 0777, bool $recursive = false,
                                          $context = null ) : void {
         $result = @mkdir( $directory, $permissions, $recursive, $context );
@@ -168,7 +180,7 @@ final class OK {
     }
 
 
-    /** param resource $context */
+    /** @param ?resource $context */
     public static function mkdirIfDoesNotExist( string $directory, int $permissions = 0777,
                                                 bool   $recursive = false, $context = null ) : void {
         if ( is_dir( $directory ) ) {
@@ -220,6 +232,16 @@ final class OK {
 
     public static function ob_start() : true {
         return TypeIs::true( ob_start(), 'ob_start return value' );
+    }
+
+
+    /**
+     * @param ?resource $context
+     * @return resource
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
+    public static function opendir( string $directory, mixed $context = null ) {
+        return TypeIs::resource( @opendir( $directory, $context ), 'opendir return value' );
     }
 
 
@@ -368,8 +390,38 @@ final class OK {
     }
 
 
+    /**
+     * @param ?resource $handle
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
+    public static function readdir( mixed $handle = null ) : string|false {
+        return readdir( $handle );
+    }
+
+
     public static function realpath( string $path ) : string {
         return TypeIs::string( realpath( $path ), 'realpath return value' );
+    }
+
+
+    /**
+     * @param ?resource $handle
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
+    public static function rewinddir( mixed $handle = null ) : void {
+        rewinddir( $handle );
+    }
+
+
+    /**
+     * @param int<0, 2> $sorting_order
+     * @param ?resource $context
+     * @return list<string>
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
+    public static function scandir( string $directory, int $sorting_order = SCANDIR_SORT_ASCENDING,
+                                    mixed  $context = null ) : array {
+        return TypeIs::listString( @scandir( $directory, $sorting_order, $context ) );
     }
 
 
