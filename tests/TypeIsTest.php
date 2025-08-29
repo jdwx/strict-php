@@ -18,23 +18,36 @@ use Stringable;
 final class TypeIsTest extends TestCase {
 
 
+    private static function stringable() : Stringable {
+        return new class implements Stringable {
+
+
+            public function __toString() : string {
+                return 'stringable';
+            }
+
+
+        };
+    }
+
+
     public function testArray() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsArray( TypeIs::array( [] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::array( 'not an array' );
     }
 
 
     public function testArrayNullableString() : void {
         self::assertSame( [ 'foo', null ], TypeIs::arrayNullableString( [ 'foo', null ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayNullableString( [ 'foo', 123 ] );
     }
 
 
     public function testArrayNullableStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayNullableString( 'not an array' );
     }
 
@@ -45,26 +58,34 @@ final class TypeIsTest extends TestCase {
             [ 'foo' => 'bar', 'baz' => $stringable ],
             TypeIs::arrayNullableStringy( [ 'foo' => 'bar', 'baz' => $stringable ] )
         );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayNullableStringy( [ 'foo' => 123, 'baz' => $stringable ] );
     }
 
 
     public function testArrayNullableStringyForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayNullableStringy( 'not an array' );
+    }
+
+
+    public function testArrayOrNull() : void {
+        self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayOrNull( [ 'foo', 'bar' ] ) );
+        self::assertNull( TypeIs::arrayOrNull( null ) );
+        $this->expectException( TypeException::class );
+        TypeIs::arrayOrNull( 'not an array or null' );
     }
 
 
     public function testArrayString() : void {
         self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayString( [ 'foo', 'bar' ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayString( [ 'foo', 123 ] );
     }
 
 
     public function testArrayStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayString( 'not an array' );
     }
 
@@ -81,13 +102,13 @@ final class TypeIsTest extends TestCase {
         $r = [ 'foo', 'bar', 'baz' => [ 'qux', 'quux' => 'corge' ] ];
         self::assertSame( $r, TypeIs::arrayStringOrArrayString( $r ) );
 
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayStringOrArrayString( [ 'foo' => 33 ] );
     }
 
 
     public function testArrayStringOrArrayStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayStringOrArrayString( 'not an array' );
     }
 
@@ -95,13 +116,13 @@ final class TypeIsTest extends TestCase {
     public function testArrayStringOrListString() : void {
         self::assertSame( [ 'foo', 'bar' ], TypeIs::arrayStringOrListString( [ 'foo', 'bar' ] ) );
         self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], TypeIs::arrayStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayStringOrListString( 123 );
     }
 
 
     public function testArrayStringOrListStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayStringOrListString( 'not an array' );
     }
 
@@ -109,13 +130,13 @@ final class TypeIsTest extends TestCase {
     public function testArrayStringy() : void {
         $stringable = self::stringable();
         self::assertSame( [ 'foo', $stringable ], TypeIs::arrayStringy( [ 'foo', $stringable ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayStringy( [ 'foo', 123 ] );
     }
 
 
     public function testArrayStringyForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::arrayStringy( 'not an array' );
     }
 
@@ -123,7 +144,7 @@ final class TypeIsTest extends TestCase {
     public function testBool() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsBool( TypeIs::bool( true ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::bool( 'not a bool' );
     }
 
@@ -131,7 +152,7 @@ final class TypeIsTest extends TestCase {
     public function testCallable() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsCallable( TypeIs::callable( function () {} ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::callable( 'not callable' );
     }
 
@@ -141,7 +162,7 @@ final class TypeIsTest extends TestCase {
         self::assertIsFloat( TypeIs::float( 1.23 ) );
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsFloat( TypeIs::float( 123 ) ); # implicit int-to-float conversion even for strict types
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::float( 'not a float' );
     }
 
@@ -149,7 +170,7 @@ final class TypeIsTest extends TestCase {
     public function testInt() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsInt( TypeIs::int( 123 ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::int( 'not an int' );
     }
 
@@ -157,7 +178,7 @@ final class TypeIsTest extends TestCase {
     public function testIterable() : void {
         $it = $this->generator( [ 'foo', 'bar' ] );
         self::assertSame( [ 'foo', 'bar' ], iterator_to_array( TypeIs::iterable( $it ) ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::iterable( 'not iterable' );
     }
 
@@ -165,13 +186,13 @@ final class TypeIsTest extends TestCase {
     public function testIterableNullableString() : void {
         $it = $this->generator( [ 'foo', null ] );
         self::assertSame( [ 'foo', null ], iterator_to_array( TypeIs::iterableNullableString( $it ) ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableNullableString( [ 'foo', 123 ] ) );
     }
 
 
     public function testIterableNullableStringForNotIterable() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableNullableString( 123 ) );
     }
 
@@ -180,13 +201,13 @@ final class TypeIsTest extends TestCase {
         $stringable = self::stringable();
         $it = $this->generator( [ 'foo', $stringable ] );
         self::assertSame( [ 'foo', $stringable ], iterator_to_array( TypeIs::iterableNullableStringy( $it ) ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableNullableStringy( [ 'foo', 123 ] ) );
     }
 
 
     public function testIterableNullableStringyForNotIterable() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableNullableStringy( 123 ) );
     }
 
@@ -194,13 +215,13 @@ final class TypeIsTest extends TestCase {
     public function testIterableString() : void {
         $it = $this->generator( [ 'foo', 'bar' ] );
         self::assertSame( [ 'foo', 'bar' ], iterator_to_array( TypeIs::iterableString( $it ) ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableString( [ 'baz', 123 ] ) );
     }
 
 
     public function testIterableStringForNotIterable() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableString( 123 ) );
     }
 
@@ -218,7 +239,7 @@ final class TypeIsTest extends TestCase {
         $it = $this->generator( $r );
         self::assertSame( $r, iterator_to_array( TypeIs::iterableStringOrArrayString( $it ) ) );
 
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableStringOrArrayString( 123 ) );
     }
 
@@ -228,13 +249,13 @@ final class TypeIsTest extends TestCase {
         self::assertSame( [ 'foo', 'bar' ], iterator_to_array( TypeIs::iterableStringOrListString( $it ) ) );
         $it = $this->generator( [ 'foo', [ 'bar', 'baz' ] ] );
         self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], iterator_to_array( TypeIs::iterableStringOrListString( $it ) ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableStringOrListString( 123 ) );
     }
 
 
     public function testIterableStringOrListStringForNotIterable() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableStringOrListString( 'not iterable' ) );
     }
 
@@ -248,7 +269,7 @@ final class TypeIsTest extends TestCase {
         $it = $this->generator( $r );
         self::assertSame( $r, iterator_to_array( TypeIs::iterableStringOrMapString( $it ) ) );
 
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableStringOrMapString( 123 ) );
     }
 
@@ -257,34 +278,34 @@ final class TypeIsTest extends TestCase {
         $stringable = self::stringable();
         $it = $this->generator( [ 'foo', $stringable ] );
         self::assertSame( [ 'foo', $stringable ], iterator_to_array( TypeIs::iterableStringy( $it ) ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableStringy( [ 'foo', 123 ] ) );
     }
 
 
     public function testIterableStringyForNotIterable() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         iterator_to_array( TypeIs::iterableStringy( 123 ) );
     }
 
 
     public function testListNullableString() : void {
         self::assertSame( [ 'foo', null ], TypeIs::listNullableString( [ 'foo', null ] ) );
-        self::expectException( TypeException::class );
-        self::expectExceptionMessage( '?string value' );
+        $this->expectException( TypeException::class );
+        $this->expectExceptionMessage( '?string value' );
         self::assertSame( [ 'foo', null ], TypeIs::listNullableString( [ 'foo', 123 ] ) );
     }
 
 
     public function testListNullableStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listNullableString( 'not an array' );
     }
 
 
     public function testListNullableStringForStringKey() : void {
-        self::expectException( TypeException::class );
-        self::expectExceptionMessage( 'int key' );
+        $this->expectException( TypeException::class );
+        $this->expectExceptionMessage( 'int key' );
         TypeIs::listNullableString( [ 'foo', 'bar' => null ] );
     }
 
@@ -295,39 +316,39 @@ final class TypeIsTest extends TestCase {
             [ 'foo', $stringable ],
             iterator_to_array( TypeIs::listNullableStringy( [ 'foo', $stringable ] ) )
         );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         self::assertSame( [ 'foo', $stringable ], TypeIs::listNullableStringy( [ 'foo', 123 ] ) );
     }
 
 
     public function testListNullableStringyForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listNullableStringy( 'not an array' );
     }
 
 
     public function testListNullableStringyForStringKey() : void {
-        self::expectException( TypeException::class );
-        self::expectExceptionMessage( 'int key' );
+        $this->expectException( TypeException::class );
+        $this->expectExceptionMessage( 'int key' );
         TypeIs::listNullableStringy( [ 'foo', 'bar' => null ] );
     }
 
 
     public function testListString() : void {
         self::assertSame( [ 'foo', 'bar' ], TypeIs::listString( [ 'foo', 'bar' ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         self::assertSame( [ 'foo', 'bar' ], TypeIs::listString( [ 'foo', 'baz' => 'bar' ] ) );
     }
 
 
     public function testListStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listString( 'not an array' );
     }
 
 
     public function testListStringForValueNotString() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listString( [ 'foo', 123 ] );
     }
 
@@ -335,19 +356,19 @@ final class TypeIsTest extends TestCase {
     public function testListStringOrListString() : void {
         self::assertSame( [ 'foo', 'bar' ], TypeIs::listStringOrListString( [ 'foo', 'bar' ] ) );
         self::assertSame( [ 'foo', [ 'bar', 'baz' ] ], TypeIs::listStringOrListString( [ 'foo', [ 'bar', 'baz' ] ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listStringOrListString( [ 123 ] );
     }
 
 
     public function testListStringOrListStringForKeyNotInt() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listStringOrListString( [ 'foo' => 'bar' ] );
     }
 
 
     public function testListStringOrListStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listStringOrListString( 'not an array' );
     }
 
@@ -355,34 +376,34 @@ final class TypeIsTest extends TestCase {
     public function testListStringy() : void {
         $stringable = self::stringable();
         self::assertSame( [ 'foo', $stringable ], TypeIs::listStringy( [ 'foo', $stringable ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         self::assertSame( [ 'foo', $stringable ], TypeIs::listStringy( [ 'foo', 123 ] ) );
     }
 
 
     public function testListStringyForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::listStringy( 'not an array' );
     }
 
 
     public function testListStringyForStringKey() : void {
         $stringable = self::stringable();
-        self::expectException( TypeException::class );
-        self::expectExceptionMessage( 'int key' );
+        $this->expectException( TypeException::class );
+        $this->expectExceptionMessage( 'int key' );
         TypeIs::listStringy( [ 'foo', 'bar' => $stringable ] );
     }
 
 
     public function testMapNullableString() : void {
         self::assertSame( [ 'foo' => 'bar', 'baz' => null ], TypeIs::mapNullableString( [ 'foo' => 'bar', 'baz' => null ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapNullableString( [ 'foo' => 123, 'baz' => null ] );
     }
 
 
     public function testMapNullableStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapNullableString( 'not an array' );
     }
 
@@ -393,20 +414,20 @@ final class TypeIsTest extends TestCase {
             [ 'foo' => 'bar', 'baz' => $stringable ],
             TypeIs::mapNullableStringy( [ 'foo' => 'bar', 'baz' => $stringable ] )
         );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapNullableStringy( [ 'foo' => 123, 'baz' => $stringable ] );
     }
 
 
     public function testMapString() : void {
         self::assertSame( [ 'foo' => 'bar', 'baz' => 'qux' ], TypeIs::mapString( [ 'foo' => 'bar', 'baz' => 'qux' ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapString( [ 'foo' => 123, 'baz' => 'qux' ] );
     }
 
 
     public function testMapStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapString( 'not an array' );
     }
 
@@ -423,20 +444,20 @@ final class TypeIsTest extends TestCase {
         $r = [ 'foo', 'bar', 'baz' => [ 'qux', 'quux' => 'corge' ] ];
         self::assertSame( $r, TypeIs::mapStringOrArrayString( $r ) );
 
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapStringOrArrayString( [ 'foo' => 123, 'baz' => 'qux' ] );
     }
 
 
     public function testMapStringOrListString() : void {
         self::assertSame( [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ], TypeIs::mapStringOrListString( [ 'foo' => 'bar', 'baz' => [ 'qux', 'quux' ] ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapStringOrListString( [ 'foo' => 123, 'baz' => [ 'qux', 'quux' ] ] );
     }
 
 
     public function testMapStringOrListStringForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapStringOrListString( 'not an array' );
     }
 
@@ -447,27 +468,27 @@ final class TypeIsTest extends TestCase {
             [ 'foo' => 'bar', 'baz' => $stringable ],
             TypeIs::mapStringy( [ 'foo' => 'bar', 'baz' => $stringable ] )
         );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapStringy( [ 'foo' => 123, 'baz' => $stringable ] );
     }
 
 
     public function testMapStringyForNotArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::mapStringy( 'not an array' );
     }
 
 
     public function testObject() : void {
         self::assertInstanceOf( $this::class, TypeIs::object( $this ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::object( 'not an object' );
     }
 
 
     public function testResource() : void {
-        self::assertIsResource( TypeIs::resource( fopen( __FILE__, 'r' ) ) );
-        self::expectException( TypeException::class );
+        self::assertIsResource( TypeIs::resource( fopen( __FILE__, 'rb' ) ) );
+        $this->expectException( TypeException::class );
         TypeIs::resource( 'not a resource' );
     }
 
@@ -475,7 +496,7 @@ final class TypeIsTest extends TestCase {
     public function testString() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( TypeIs::string( 'test' ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::string( 123 );
     }
 
@@ -484,19 +505,19 @@ final class TypeIsTest extends TestCase {
         self::assertSame( 'foo', TypeIs::stringOrArrayString( 'foo' ) );
         self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrArrayString( [ 'foo', 'bar' ] ) );
         self::assertSame( [ 'foo', 'bar' => 'baz' ], TypeIs::stringOrArrayString( [ 'foo', 'bar' => 'baz' ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrArrayString( 123 );
     }
 
 
     public function testStringOrArrayStringForBadArrayValue() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrArrayString( [ 'foo' => 123 ] );
     }
 
 
     public function testStringOrArrayStringForNestedArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrArrayString( [ 'foo' => [ 'bar' => 'baz' ] ] );
     }
 
@@ -504,25 +525,25 @@ final class TypeIsTest extends TestCase {
     public function testStringOrListString() : void {
         self::assertSame( 'foo', TypeIs::stringOrListString( 'foo' ) );
         self::assertSame( [ 'foo', 'bar' ], TypeIs::stringOrListString( [ 'foo', 'bar' ] ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrListString( 123 );
     }
 
 
     public function testStringOrListStringForBadArrayValue() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrListString( [ 'foo', 123 ] );
     }
 
 
     public function testStringOrListStringForNestedArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrListString( [ 'foo' => [ 'bar', 'baz' ] ] );
     }
 
 
     public function testStringOrListStringForStringKey() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrListString( [ 'foo' => 'bar' ] );
     }
 
@@ -531,19 +552,19 @@ final class TypeIsTest extends TestCase {
         self::assertSame( 'foo', TypeIs::stringOrMapString( 'foo' ) );
         $r = [ 'foo' => 'bar', 'baz' => 'qux' ];
         self::assertSame( $r, TypeIs::stringOrMapString( $r ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrMapString( 123 );
     }
 
 
     public function testStringOrMapStringForBadArrayValue() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrMapString( [ 'foo' => 123 ] );
     }
 
 
     public function testStringOrMapStringForNestedArray() : void {
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrMapString( [ 'foo' => [ 'bar' => 'baz' ] ] );
     }
 
@@ -551,7 +572,7 @@ final class TypeIsTest extends TestCase {
     public function testStringOrNull() : void {
         self::assertSame( 'foo', TypeIs::stringOrNull( 'foo' ) );
         self::assertNull( TypeIs::stringOrNull( null ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringOrNull( 123 );
     }
 
@@ -560,7 +581,7 @@ final class TypeIsTest extends TestCase {
         $stringable = self::stringable();
         self::assertSame( $stringable, TypeIs::stringy( $stringable ) );
         self::assertSame( 'foo', TypeIs::stringy( 'foo' ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringy( 123 );
     }
 
@@ -570,7 +591,7 @@ final class TypeIsTest extends TestCase {
         self::assertSame( 'foo', TypeIs::stringyOrNull( 'foo' ) );
         self::assertSame( $stringable, TypeIs::stringyOrNull( $stringable ) );
         self::assertNull( TypeIs::stringyOrNull( null ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::stringyOrNull( false );
     }
 
@@ -578,7 +599,7 @@ final class TypeIsTest extends TestCase {
     public function testTrue() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertTrue( TypeIs::true( true ) );
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         TypeIs::true( 'not a bool' );
     }
 
@@ -591,19 +612,6 @@ final class TypeIsTest extends TestCase {
         foreach ( $i_rValues as $key => $value ) {
             yield $key => $value;
         }
-    }
-
-
-    private function stringable() : Stringable {
-        return new class implements Stringable {
-
-
-            public function __toString() : string {
-                return 'stringable';
-            }
-
-
-        };
     }
 
 

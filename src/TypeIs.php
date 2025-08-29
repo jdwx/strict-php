@@ -26,7 +26,7 @@ final class TypeIs {
     /** @return array<int|string, ?string> */
     public static function arrayNullableString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) && ! is_null( $val ) ) {
                     throw new TypeException( '?string value', $val, $i_nstContext );
                 }
@@ -41,7 +41,7 @@ final class TypeIs {
     /** @return array<int|string, string|Stringable|null> */
     public static function arrayNullableStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) && ! is_null( $val ) ) {
                     throw new TypeException( 'string|Stringable|null value', $val, $i_nstContext );
                 }
@@ -53,10 +53,19 @@ final class TypeIs {
     }
 
 
+    /** @return array<int|string, mixed>|null */
+    public static function arrayOrNull( mixed $i_value, ?string $i_nstContext = null ) : ?array {
+        if ( is_array( $i_value ) || is_null( $i_value ) ) {
+            return $i_value;
+        }
+        throw new TypeException( 'array or null', $i_value, $i_nstContext );
+    }
+
+
     /** @return array<int|string, string> */
     public static function arrayString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) ) {
                     throw new TypeException( 'string value', $val, $i_nstContext );
                 }
@@ -97,7 +106,7 @@ final class TypeIs {
     /** @return array<int|string, string|Stringable> */
     public static function arrayStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) ) {
                     throw new TypeException( 'string|Stringable value', $val, $i_nstContext );
                 }
@@ -246,7 +255,7 @@ final class TypeIs {
     /** @return list<string|null> */
     public static function listNullableString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val, $key ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val, $key ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) && ! is_null( $val ) ) {
                     throw new TypeException( '?string value', $val, $i_nstContext );
                 }
@@ -264,7 +273,7 @@ final class TypeIs {
     /** @return list<string|Stringable> */
     public static function listNullableStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val, $key ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val, $key ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) && ! is_null( $val ) ) {
                     throw new TypeException( 'string|Stringable|null value', $val, $i_nstContext );
                 }
@@ -282,7 +291,7 @@ final class TypeIs {
     /** @return list<string> */
     public static function listString( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val, $key ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val, $key ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) ) {
                     throw new TypeException( 'string value', $val, $i_nstContext );
                 }
@@ -314,7 +323,7 @@ final class TypeIs {
     /** @return list<string|Stringable> */
     public static function listStringy( mixed $i_value, ?string $i_nstContext = null ) : array {
         if ( is_array( $i_value ) ) {
-            array_walk( $i_value, function ( $val, $key ) use ( $i_nstContext ) : void {
+            array_walk( $i_value, static function ( $val, $key ) use ( $i_nstContext ) : void {
                 if ( ! is_string( $val ) && ! ( $val instanceof Stringable ) ) {
                     throw new TypeException( 'string|Stringable value', $val, $i_nstContext );
                 }
