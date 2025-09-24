@@ -100,6 +100,15 @@ final class OK {
     }
 
 
+    public static function fsockopen( string $hostname, int $port = -1, int &$error_code = null,
+                                      string &$error_message = null, ?float $timeout = null ) : mixed {
+        return TypeIs::resource(
+            @fsockopen( $hostname, $port, $error_code, $error_message, $timeout ),
+            'fsockopen return value'
+        );
+    }
+
+
     /**
      * @param resource $handle
      * @suppress PhanTypeMismatchArgumentNullableInternal

@@ -86,6 +86,19 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testFSockOpen() : void {
+        $socket = OK::socket_create( AF_INET, SOCK_DGRAM, 0 );
+        OK::socket_bind( $socket, '127.0.0.1' );
+        OK::socket_getsockname( $socket, $address, $port );
+        self::assertIsInt( $port );
+        self::assertGreaterThan( 0, $port );
+
+        $fh = OK::fsockopen( 'udp://127.0.0.1', $port, $errno, $errstr );
+        self::assertIsResource( $fh );
+        fclose( $fh );
+    }
+
+
     public function testFWrite() : void {
         $tempFile = OK::tempnam( sys_get_temp_dir(), 'test' );
         $fh = OK::fopen( $tempFile, 'w' );
