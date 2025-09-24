@@ -90,7 +90,7 @@ final class OKTest extends TestCase {
         $socket = OK::socket_create( AF_INET, SOCK_DGRAM, 0 );
         OK::socket_bind( $socket, '127.0.0.1' );
         OK::socket_getsockname( $socket, $address, $port );
-        self::assertIsInt( $port );
+        assert( is_int( $port ) );
         self::assertGreaterThan( 0, $port );
 
         $fh = OK::fsockopen( 'udp://127.0.0.1', $port, $errno, $errstr );
