@@ -1,6 +1,10 @@
 parameters:
 	level: 9
 	treatPhpDocTypesAsCertain: false
+	phpVersion:
+		min: 80300
+		max: 80400
+
 	paths:
 		- src
 		- tests
