@@ -261,6 +261,27 @@ final class OK {
 
 
     /**
+     * @param string $command
+     * @param int|null $return_var
+     * @param-out int $return_var
+     * @return void
+     * @suppress PhanTypeVoidAssignment Phan has the wrong idea about passthru's return type
+     */
+    public static function passthru( string $command, ?int &$return_var = null ) : void {
+        $result = @passthru( $command, $return_var );
+        if ( $result === null ) {
+            return;
+        }
+        throw new UnexpectedFailureException(
+            'passthru',
+            'Failed to execute command: ' . $command,
+            0,
+            null
+        );
+    }
+
+
+    /**
      * @param list<list<string|int>|string>|null &$matches
      * @param-out list<list<string|int>|string> $matches
      */

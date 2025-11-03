@@ -268,6 +268,17 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testPassthru() : void {
+        ob_start();
+        OK::passthru( 'echo "test data"', $ret );
+        $output = ob_get_clean();
+        self::assertSame( 0, $ret );
+        self::assertSame( "test data\n", $output );
+
+        # I do not know how to provoke a failure of passthru() in a test environment.
+    }
+
+
     public function testPregMatch() : void {
         self::assertSame( 1, OK::preg_match( '/test/', 'this is a test' ) );
         $this->expectException( UnexpectedFailureException::class );
