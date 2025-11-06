@@ -436,6 +436,15 @@ final class OK {
 
 
     /**
+     * @param ?resource $context
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
+    public static function rename( string $from, string $to, mixed $context = null ) : void {
+        TypeIs::true( rename( $from, $to, $context ) );
+    }
+
+
+    /**
      * @param ?resource $handle
      * @suppress PhanTypeMismatchArgumentNullableInternal
      */
