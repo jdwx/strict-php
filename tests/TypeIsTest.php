@@ -480,7 +480,7 @@ final class TypeIsTest extends TestCase {
 
 
     public function testObject() : void {
-        self::assertInstanceOf( $this::class, TypeIs::object( $this ) );
+        self::assertSame( $this, TypeIs::object( $this ) );
         $this->expectException( TypeException::class );
         TypeIs::object( 'not an object' );
     }
@@ -490,6 +490,15 @@ final class TypeIsTest extends TestCase {
         self::assertIsResource( TypeIs::resource( fopen( __FILE__, 'rb' ) ) );
         $this->expectException( TypeException::class );
         TypeIs::resource( 'not a resource' );
+    }
+
+
+    public function testSocket() : void {
+        $sock = socket_create( AF_INET, SOCK_STREAM, 0 );
+        self::assertSame( $sock, TypeIs::socket( $sock ) );
+
+        $this->expectException( TypeException::class );
+        TypeIs::socket( 5 );
     }
 
 

@@ -400,6 +400,15 @@ final class TypeIs {
     }
 
 
+    /** @noinspection PhpComposerExtensionStubsInspection */
+    public static function socket( mixed $i_value, ?string $i_nstContext = null ) : \Socket {
+        if ( $i_value instanceof \Socket ) {
+            return $i_value;
+        }
+        throw new TypeException( 'socket', $i_value, $i_nstContext );
+    }
+
+
     public static function string( mixed $i_value, ?string $i_nstContext = null ) : string {
         if ( is_string( $i_value ) ) {
             return $i_value;
