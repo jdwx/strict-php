@@ -38,10 +38,21 @@ final class OK {
 
     /**
      * @param resource $handle
+     * @return true
      * @suppress PhanTypeMismatchDeclaredParamNullable
      */
-    public static function fclose( mixed $handle ) : bool {
+    public static function fclose( mixed $handle ) : true {
         return TypeIs::true( @fclose( $handle ), 'fclose return value' );
+    }
+
+
+    /**
+     * @param resource $handle
+     * @return true
+     * @suppress PhanTypeMismatchDeclaredParamNullable
+     */
+    public static function fflush( mixed $handle ) : true {
+        return TypeIs::true( @fflush( $handle ), 'fflush return value' );
     }
 
 

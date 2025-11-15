@@ -44,8 +44,16 @@ final class OKTest extends TestCase {
 
     public function testFClose() : void {
         $fh = OK::fopen( __FILE__, 'r' );
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertTrue( OK::fclose( $fh ) );
         # I do not know of a way to provoke fclose() to return false in a test environment.
+    }
+
+
+    public function testFFlush() : void {
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertTrue( OK::fflush( STDOUT ) );
+        # I do not know of a way to provoke fflush() to return false in a test environment.
     }
 
 
