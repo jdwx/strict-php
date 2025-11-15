@@ -11,6 +11,7 @@
     "php": ">=8.3"
   },
   "require-dev": {
+    "ext-sockets": "*",
     "phan/phan": "^v5",
     "phpstan/phpstan": "^2.0",
     "phpunit/phpunit": "^10"
