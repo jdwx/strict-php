@@ -102,6 +102,7 @@ final class OK {
 
     /**
      * @return resource
+     * @suppress PhanTypeMismatchDeclaredReturnNullable
      * @suppress PhanTypeMismatchArgumentNullableInternal
      */
     public static function fsockopen( string  $hostname, int $port = -1, ?int &$error_code = null,
