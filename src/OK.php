@@ -505,6 +505,10 @@ final class OK {
     }
 
 
+    /**
+     * @return resource
+     * @suppress PhanTypeMismatchDeclaredReturnNullable
+     */
     public static function socket_export_stream( \Socket $socket ) : mixed {
         return TypeIs::resource( socket_export_stream( $socket ) );
     }
