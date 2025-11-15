@@ -385,6 +385,12 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testRename() : void {
+        $this->expectException( TypeException::class );
+        OK::rename( '/no/such/file', '/no/such/file2' );
+    }
+
+
     /** @noinspection SpellCheckingInspection */
     public function testScandir() : void {
         $r = OK::scandir( __DIR__ );
