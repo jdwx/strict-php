@@ -436,6 +436,14 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testSocketImportStream() : void {
+        $stream = OK::fsockopen( 'udp://127.0.0.1', 12345 );
+        $sock = OK::socket_import_stream( $stream );
+        $newStream = OK::socket_export_stream( $sock );
+        self::assertSame( $stream, $newStream );
+    }
+
+
     public function testSocketRead() : void {
         OK::socket_create_pair( AF_UNIX, SOCK_STREAM, 0, $sockets );
         /** @phpstan-ignore function.alreadyNarrowedType */

@@ -100,7 +100,10 @@ final class OK {
     }
 
 
-    /** @suppress PhanTypeMismatchArgumentNullableInternal */
+    /**
+     * @return resource
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
     public static function fsockopen( string  $hostname, int $port = -1, ?int &$error_code = null,
                                       ?string &$error_message = null, ?float $timeout = null ) : mixed {
         return TypeIs::resource(
@@ -272,12 +275,14 @@ final class OK {
         if ( $result === null ) {
             return;
         }
+        // @codeCoverageIgnoreStart
         throw new UnexpectedFailureException(
             'passthru',
             'Failed to execute command: ' . $command,
             0,
             null
         );
+        // @codeCoverageIgnoreEnd
     }
 
 
@@ -499,6 +504,11 @@ final class OK {
     }
 
 
+    public static function socket_export_stream( \Socket $socket ) : mixed {
+        return TypeIs::resource( socket_export_stream( $socket ) );
+    }
+
+
     public static function socket_getsockname( \Socket $socket, ?string &$address, ?int &$port = null ) : void {
         $result = @socket_getsockname( $socket, $address, $port );
         if ( true === $result ) {
@@ -508,6 +518,15 @@ final class OK {
         throw new UnexpectedFailureException( 'socket_getsockname', socket_strerror( socket_last_error() ),
             0, null );
         // @codeCoverageIgnoreEnd
+    }
+
+
+    /**
+     * @param resource $stream
+     * @suppress PhanTypeMismatchDeclaredParamNullable
+     */
+    public static function socket_import_stream( mixed $stream ) : \Socket {
+        return TypeIs::socket( socket_import_stream( $stream ) );
     }
 
 
