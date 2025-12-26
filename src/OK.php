@@ -657,6 +657,21 @@ final class OK {
     }
 
 
+    /**
+     * @param resource $stream
+     */
+    public static function stream_get_line( $stream, int $length, string $ending = '' ) : string {
+        $result = @stream_get_line( $stream, $length, $ending );
+        if ( is_string( $result ) ) {
+            return $result;
+        }
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedFailureException( 'stream_get_line', 'Failed to read line from stream',
+            0, null );
+        // @codeCoverageIgnoreEnd
+    }
+
+
     /** @suppress PhanTypeMismatchArgumentNullableInternal */
     public static function strtotime( string $datetime, ?int $baseTimestamp = null ) : int {
         return TypeIs::int( strtotime( $datetime, $baseTimestamp ), 'strtotime return value' );

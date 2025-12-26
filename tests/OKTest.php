@@ -549,6 +549,13 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testStreamGetLine() : void {
+        $fh = OK::fopen( __FILE__, 'r' );
+        self::assertSame( '<?php /** @noinspection PhpComposerExtensionStubsInspection */', OK::stream_get_line( $fh, 100, "\n" ) );
+        fclose( $fh );
+    }
+
+
     /**
      * Tests tempnam() but, by necessity, also tests ini_set().
      */
