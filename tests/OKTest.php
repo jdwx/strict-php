@@ -141,6 +141,12 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testGetHostName() : void {
+        self::assertSame( gethostname(), OK::gethostname() );
+        # I do not know how to provoke a failure of gethostname() in a test environment.
+    }
+
+
     public function testHttpResponseCode() : void {
         # Since PHPUnit doesn't run under a web server, we cannot test
         # the successful case of http_response_code(). But it's happy

@@ -136,6 +136,11 @@ final class OK {
     }
 
 
+    public static function gethostname() : string {
+        return TypeIs::string( gethostname(), 'gethostname return value' );
+    }
+
+
     public static function http_response_code( int $code = 0 ) : int {
         return TypeIs::int( http_response_code( $code ), 'http_response_code return value' );
     }
