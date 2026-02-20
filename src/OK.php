@@ -444,6 +444,28 @@ final class OK {
 
 
     /**
+     * @param list<string>|string $command
+     * @param array<int, list<mixed>|resource> $descriptor_spec
+     * @param array<int, resource> & $pipes
+     * @param ?string $cwd
+     * @param mixed[]|null $env_vars
+     * @param ?array<string, mixed> $options
+     * @return resource
+     */
+    public static function proc_open( array|string $command,
+                                      array        $descriptor_spec,
+                                      array        &$pipes,
+                                      ?string      $cwd = null,
+                                      ?array       $env_vars = null,
+                                      ?array       $options = null ) : mixed {
+        return TypeIs::resource(
+            proc_open( $command, $descriptor_spec, $pipes, $cwd, $env_vars, $options ),
+            'proc_open return value'
+        );
+    }
+
+
+    /**
      * @param ?resource $handle
      * @suppress PhanTypeMismatchArgumentNullableInternal
      */

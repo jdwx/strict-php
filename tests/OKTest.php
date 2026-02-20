@@ -391,6 +391,19 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testProcOpen() : void {
+        $pipes = [];
+        $x = OK::proc_open( [ '/bin/echo', 'foo' ], [
+            0 => [ 'file', '/dev/null', 'r' ],
+            1 => [ 'pipe', 'w' ],
+            2 => [ 'file', '/dev/null', 'w' ],
+        ], $pipes );
+        self::assertIsResource( $x );
+        self::assertSame( "foo\n", OK::fgets( $pipes[ 1 ] ) );
+        proc_close( $x );
+    }
+
+
     public function testRealPath() : void {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         self::assertIsString( OK::realpath( __FILE__ ) );
