@@ -141,6 +141,20 @@ final class OK {
     }
 
 
+    /**
+     * Be aware that globbing a nonexistent path does not throw an exception.
+     * glob() returns an empty array in that situation. So you should either
+     * test the validity of the base path or handle the empty result accordingly.
+     *
+     * @param string $pattern
+     * @param int $flags
+     * @return list<string>
+     */
+    public static function glob( string $pattern, int $flags = 0 ) : array {
+        return TypeIs::listString( @glob( $pattern, $flags ), 'glob return value' );
+    }
+
+
     public static function http_response_code( int $code = 0 ) : int {
         return TypeIs::int( http_response_code( $code ), 'http_response_code return value' );
     }
@@ -446,11 +460,13 @@ final class OK {
     /**
      * @param list<string>|string $command
      * @param array<int, list<mixed>|resource> $descriptor_spec
-     * @param array<int, resource> & $pipes
+     * @param array<int, resource> &$pipes
      * @param ?string $cwd
      * @param mixed[]|null $env_vars
      * @param ?array<string, mixed> $options
      * @return resource
+     * @suppress PhanTypeMismatchDeclaredReturnNullable
+     * @suppress PhanTypeMismatchArgumentNullableInternal
      */
     public static function proc_open( array|string $command,
                                       array        $descriptor_spec,
@@ -484,7 +500,7 @@ final class OK {
      * @suppress PhanTypeMismatchArgumentNullableInternal
      */
     public static function rename( string $from, string $to, mixed $context = null ) : void {
-        TypeIs::true( rename( $from, $to, $context ) );
+        TypeIs::true( @rename( $from, $to, $context ) );
     }
 
 

@@ -147,6 +147,12 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testGlob() : void {
+        self::assertContains( __FILE__, OK::glob( __DIR__ . '/*' ) );
+        self::assertSame( [], OK::glob( '/no/such/file' ) );
+    }
+
+
     public function testHttpResponseCode() : void {
         # Since PHPUnit doesn't run under a web server, we cannot test
         # the successful case of http_response_code(). But it's happy
