@@ -25,6 +25,25 @@ final class OKTest extends TestCase {
     }
 
 
+    public function testCopy() : void {
+        OK::copy( __FILE__, __FILE__ . '.copy' );
+        self::assertFileExists( __FILE__ . '.copy' );
+        self::assertFileEquals( __FILE__, __FILE__ . '.copy' );
+        unlink( __FILE__ . '.copy' );
+
+        $this->expectException( UnexpectedFailureException::class );
+        OK::copy( '/no/such/file', sys_get_temp_dir() . '/nope' );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgumentProbablyReal That is sort of the point. */
+    public function testCopyForBadContext() : void {
+        $this->expectException( TypeException::class );
+        /** @phpstan-ignore-next-line */
+        OK::copy( __FILE__, __FILE__ . '.copy', 'not a resource' );
+    }
+
+
     public function testDirectoryFunctions() : void {
         $x = OK::opendir( __DIR__ );
         OK::rewinddir( $x );

@@ -37,6 +37,21 @@ final class OK {
 
 
     /**
+     * @param string $from
+     * @param string $to
+     * @param resource|null $context
+     * @return void
+     * @suppress PhanTypeMismatchArgumentNullableInternal Phan has wrong type.
+     */
+    public static function copy( string $from, string $to, mixed $context = null ) : void {
+        if ( @copy( $from, $to, TypeIs::resourceOrNull( $context ) ) ) {
+            return;
+        }
+        throw new UnexpectedFailureException( "copy( {$from}, {$to} )" );
+    }
+
+
+    /**
      * @param resource $handle
      * @return true
      * @suppress PhanTypeMismatchDeclaredParamNullable

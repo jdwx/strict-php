@@ -501,6 +501,14 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testResourceOrNull() : void {
+        self::assertIsResource( TypeIs::resourceOrNull( fopen( __FILE__, 'rb' ) ) );
+        self::assertNull( TypeIs::resourceOrNull( null ) );
+        $this->expectException( TypeException::class );
+        TypeIs::resourceOrNull( 'not a resource or null' );
+    }
+
+
     public function testSocket() : void {
         $sock = socket_create( AF_INET, SOCK_STREAM, 0 );
         self::assertSame( $sock, TypeIs::socket( $sock ) );

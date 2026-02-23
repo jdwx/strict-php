@@ -382,7 +382,7 @@ final class TypeIs {
 
     public static function null( mixed $i_value, ?string $i_nstContext = null ) : null {
         if ( is_null( $i_value ) ) {
-            return $i_value;
+            return null;
         }
         throw new TypeException( 'null', $i_value, $i_nstContext );
     }
@@ -405,6 +405,20 @@ final class TypeIs {
             return $i_value;
         }
         throw new TypeException( 'resource', $i_value, $i_nstContext );
+    }
+
+
+    /**
+     * @param mixed $i_value
+     * @param string|null $i_nstContext
+     * @return ?resource
+     * @noinspection PhpMixedReturnTypeCanBeReducedInspection No, it can't.
+     */
+    public static function resourceOrNull( mixed $i_value, ?string $i_nstContext = null ) : mixed {
+        if ( is_resource( $i_value ) || is_null( $i_value ) ) {
+            return $i_value;
+        }
+        throw new TypeException( '?resource', $i_value, $i_nstContext );
     }
 
 
