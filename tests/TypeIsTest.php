@@ -479,6 +479,14 @@ final class TypeIsTest extends TestCase {
     }
 
 
+    public function testNull() : void {
+        /** @phpstan-ignore-next-line */
+        self::assertNull( TypeIs::null( null ) );
+        $this->expectException( TypeException::class );
+        TypeIs::null( 'not null' );
+    }
+
+
     public function testObject() : void {
         self::assertSame( $this, TypeIs::object( $this ) );
         $this->expectException( TypeException::class );

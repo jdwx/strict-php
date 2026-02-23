@@ -380,6 +380,14 @@ final class TypeIs {
     }
 
 
+    public static function null( mixed $i_value, ?string $i_nstContext = null ) : null {
+        if ( is_null( $i_value ) ) {
+            return $i_value;
+        }
+        throw new TypeException( 'null', $i_value, $i_nstContext );
+    }
+
+
     public static function object( mixed $i_value, ?string $i_nstContext = null ) : object {
         if ( is_object( $i_value ) ) {
             return $i_value;
